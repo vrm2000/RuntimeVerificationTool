@@ -35,15 +35,25 @@ public class Node extends Thread {
 	}
 
 	public boolean evaluarCondicion() {
-		switch (formula) {
+		switch (formula.toUpperCase()) {
 		case "TRUE":
 			return true;
 		case "FALSE":
 			return false;
 		case "NOT":
+			System.out.print("Soy Nodo " + id_nodo);
+			System.out.println(" tengo NOT y devuelvo " + !lftbool);
 			return !lftbool;
 		case "":
 			return lftbool;
+		case "AND":
+			System.out.print("Soy Nodo " + id_nodo);
+			System.out.println(" tengo AND y devuelvo " + (lftbool && rgtbool));
+			return lftbool && rgtbool;
+		case "OR":
+			System.out.print("Soy Nodo " + id_nodo);
+			System.out.println(" tengo OR y devuelvo " + (lftbool || rgtbool));
+			return lftbool || rgtbool;
 		default:
 			return false;
 		}
