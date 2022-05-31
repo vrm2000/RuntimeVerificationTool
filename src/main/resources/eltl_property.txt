@@ -1,0 +1,1 @@
+(Eventually_[stt,stp] rx_data>14 MB ) && Always_[h,l] avg_datarate<=1 MBps

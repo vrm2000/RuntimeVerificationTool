@@ -1,13 +1,13 @@
+package Main;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Node extends Thread {
-	public String formula;
+public abstract class Node extends Thread {
 	public Node rgt;
 
 	public int id_nodo;
-	
 	private static final Lock lock = new ReentrantLock();
 	private static Condition[] conditions;
 	
@@ -19,8 +19,8 @@ public class Node extends Thread {
 	public boolean lftSent = false;
 	public Node pnt; // Parent node
 
-	public Node(String f,int id,int total, Node parent) {
-		formula = f;
+	public Node(int id,int total, Node parent) {
+
 		this.id_nodo = id;
 		this.pnt = parent;
 		if(pnt == null) {
@@ -34,30 +34,7 @@ public class Node extends Thread {
 		this.rgt = node2;
 	}
 
-	public boolean evaluarCondicion() {
-		switch (formula.toUpperCase()) {
-		case "TRUE":
-			return true;
-		case "FALSE":
-			return false;
-		case "NOT":
-			System.out.print("Soy Nodo " + id_nodo);
-			System.out.println(" tengo NOT y devuelvo " + !lftbool);
-			return !lftbool;
-		case "":
-			return lftbool;
-		case "AND":
-			System.out.print("Soy Nodo " + id_nodo);
-			System.out.println(" tengo AND y devuelvo " + (lftbool && rgtbool));
-			return lftbool && rgtbool;
-		case "OR":
-			System.out.print("Soy Nodo " + id_nodo);
-			System.out.println(" tengo OR y devuelvo " + (lftbool || rgtbool));
-			return lftbool || rgtbool;
-		default:
-			return false;
-		}
-	}
+	public abstract boolean evaluarCondicion();
 
 	@Override
 	public void run() {
