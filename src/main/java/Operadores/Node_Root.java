@@ -1,5 +1,10 @@
 package Operadores;
 
+import java.util.ArrayList;
+import java.util.Map;
+
+import org.apache.commons.collections4.BidiMap;
+
 import Main.Node;
 
 public class Node_Root extends Node {
@@ -10,7 +15,22 @@ public class Node_Root extends Node {
 
 	@Override
 	public boolean evaluarCondicion() {
-		return false;
+		while (!finished) {
+
+		}
+		return lftbool;
+	}
+
+	public void setDiccionario(BidiMap<String, String> e) {
+		event_type = e;
+	}
+
+	public void updateEventsTrace(Map<String, String> event) {
+		for (String key : event.keySet()) {
+			if (!trazas.containsKey(key))
+				trazas.put(key, new ArrayList<String>());
+			trazas.get(key).add(event.get(key));
+		}
 	}
 
 }

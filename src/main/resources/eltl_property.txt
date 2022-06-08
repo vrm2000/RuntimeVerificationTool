@@ -1,1 +1,16 @@
-(Eventually_[stt,stp] rx_data>14 MB ) && Always_[h,l] avg_datarate<=1 MBps
+#define DATE 0
+#define TSP 1
+#define EVENTS 2
+#define RX_DATA 3
+#events start_end 0
+#events stt 1
+#events stp 2
+#events fp 3
+#events l 4
+#events h 5
+
+
+
+
+
+

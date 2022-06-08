@@ -1,8 +1,15 @@
 package Main;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 public abstract class Node extends Thread {
 	public Node rgt;
@@ -18,6 +25,10 @@ public abstract class Node extends Thread {
 	public boolean lftbool = false;
 	public boolean lftSent = false;
 	public Node pnt; // Parent node
+	
+	protected static Map<String, ArrayList<String>> trazas = new HashMap<>();
+	protected static BidiMap<String, String> event_type = new DualHashBidiMap<>();
+	protected List<String> timestamps = new ArrayList<>();
 
 	public Node(int id,int total, Node parent) {
 
@@ -32,6 +43,10 @@ public abstract class Node extends Thread {
 	public void setSons(Node node1, Node node2) {
 		this.lft = node1;
 		this.rgt = node2;
+	}
+	
+	protected String getEvent(String e) {
+		return event_type.getKey(e);
 	}
 
 	public abstract boolean evaluarCondicion();
@@ -75,5 +90,11 @@ public abstract class Node extends Thread {
 		} finally {
 			lock.unlock();
 		}
+	}
+
+	public void setTimestamp(String ts1, String ts2) {
+		timestamps.add(ts1);
+		if (!ts2.equals(""))
+			timestamps.add(ts2);
 	}
 }
