@@ -4,8 +4,8 @@ import Main.Node;
 
 public class Node_NOT extends Node {
 
-	public Node_NOT(int id, int total, Node parent) {
-		super(id, total, parent);
+	public Node_NOT(int id) {
+		super(id);
 	}
 
 	@Override

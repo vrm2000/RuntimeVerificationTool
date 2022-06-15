@@ -9,8 +9,9 @@ import Main.Node;
 
 public class Node_Root extends Node {
 
-	public Node_Root(int id, int total, Node parent) {
-		super(id, total, parent);
+	public Node_Root(int id, int total) {
+		super(id, total);
+		pnt = null;
 	}
 
 	@Override

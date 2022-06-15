@@ -1,8 +1,6 @@
 package Operadores;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Scanner;
 
 import Main.Node;
@@ -11,75 +9,77 @@ public class Node_PHI extends Node {
 
 	private String phi;
 
-	public Node_PHI(int id, int total, Node parent, String phi) {
-		super(id, total, parent);
+	public Node_PHI(int id, String phi) {
+		super(id);
 		this.phi = phi;
+		condIntervalo = new ArrayList<>();
 	}
 
 	@Override
 	public boolean evaluarCondicion() {
 		Scanner sc = new Scanner(phi);
-		boolean cond = false;
-		List<Integer> ij = new ArrayList<>();
 		if (sc.hasNext()) {
 			String prop = sc.next();
-			if (trazas.containsKey(prop)) {
-				Iterator<String> it = trazas.get("EVENTS").iterator();
-				int i = 0;
-				while (it.hasNext() && i < trazas.get("EVENTS").size()
-						&& !it.next().equalsIgnoreCase(getEvent(timestamps.get(0)))) {
-					i++;
-				}
-				if (i >= trazas.get("EVENTS").size()) {
-					System.err.println("Node_PHI: Causado por I. El tamaño importa.");
-					return false;
-				}
-				ij.add(i);
-				if (timestamps.size() > 1) {
-					int j = 0;
-					while (it.hasNext() && j < trazas.get("EVENTS").size()
-							&& !it.next().equalsIgnoreCase(getEvent(timestamps.get(1)))) {
-						j++;
-					}
-					ij.add(j);
-					if (j >= trazas.get("EVENTS").size()) {
-						System.err.println("Node_PHI: Causado por J. El tamaño importa.");
-						return false;
-					}
-				}
-
+			if (trazas.containsKey(prop) || prop.equalsIgnoreCase("false") || prop.equalsIgnoreCase("true")) {
+				events_indexes = getIndex(timestamps); // Obtiene los intervalos
 			} else {
 				System.err.println("Aprende a escribir, novato");
+				sc.close();
+				return false; // Deberia lanzar error
+			}
+			if (events_indexes.get("i").get(0) < 0) {
+				sc.close();
 				return false; // Deberia lanzar error
 			}
 
-			Double comp = Double.parseDouble(trazas.get(prop).get(ij.get(0)));
-			String op = sc.next();
-			Double comp2 = Double.parseDouble(sc.next());
-			switch (op) {
-			case ">":
-				cond = comp > comp2;
-				break;
-			case "<":
-				cond = comp < comp2;
-				break;
-			case ">=":
-				cond = comp >= comp2;
-				break;
-			case "<=":
-				cond = comp <= comp2;
-				break;
-			case "!=":
-				cond = comp != comp2;
-				break;
-			case "==":
-				cond = comp == comp2;
-				break;
+			Double comp = 0.0;
+			String op = "";
+			Double comp2 = 0.0;
+			if (trazas.containsKey(prop)) {
+				op = sc.next();
+				comp2 = Double.parseDouble(sc.next());
+			}
+			for (int k = 0; k < events_indexes.get("i").size(); k++) { // Para cada intervalo
+				System.out.println("	> Intervalo " + k + ":");
+				int cont = 0;
+				// Obtenemos inicio y fin del intervalo que esta siendo evaluado
+				int j = events_indexes.get("j").get(k), i = events_indexes.get("i").get(k);
+				while (cont < j - i + 1) { // Evalua dentro del intervalo si se cumple Phi
+					if (prop.equalsIgnoreCase("true")) { // Si PHI es true, todo sera true
+						condIntervalo.add(true);
+					} else if (prop.equalsIgnoreCase("false")) { // Si PHI es false, todo sera false
+						condIntervalo.add(false);
+					} else { // Evalua condicion del tipo [Atributo] [Operador booleano] [Valor]
+						comp = Double.parseDouble(trazas.get(prop).get(i + cont));
+						switch (op) {
+						case ">":
+							condIntervalo.add(comp > comp2);
+							break;
+						case "<":
+							condIntervalo.add(comp < comp2);
+							break;
+						case ">=":
+							condIntervalo.add(comp >= comp2);
+							break;
+						case "<=":
+							condIntervalo.add(comp <= comp2);
+							break;
+						case "!=":
+							condIntervalo.add(Double.compare(comp, comp2) != 0);
+							break;
+						case "==":
+							condIntervalo.add(Double.compare(comp, comp2) == 0);
+							break;
+						}
+					}
+					System.out.println(
+							"		>>Node PHI " + (cont + i) + ": " + condIntervalo.get(condIntervalo.size() - 1));
+					cont++;
+				}
 			}
 		}
-		System.out.print("Soy Nodo " + id_nodo);
-		System.out.println(" tengo PHI (" + phi + ") y devuelvo " + cond);
-		return cond;
+		sc.close();
+		return true; // Nadie va a hacer uso de esto, todos evaluaran condIntervalo
 	}
 
 }

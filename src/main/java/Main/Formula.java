@@ -14,8 +14,8 @@ import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 import Operadores.Node_AND;
-import Operadores.Node_NOT;
-import Operadores.Node_OR;
+import Operadores.Node_Always_P;
+import Operadores.Node_Eventually_PQ;
 import Operadores.Node_PHI;
 import Operadores.Node_Root;
 
@@ -35,27 +35,19 @@ public class Formula {
 	static BidiMap<String, String> event_type = new DualHashBidiMap<>();
 
 	public static boolean getResultado(Node raiz) throws InterruptedException {
+		System.out.println("Inicio de evaluacion de propiedad:");
 		raiz.start();
 		raiz.join();
 		return raiz.evaluarCondicion();
 
 	}
 
-	public static String leerPropiedad(String file) {
-		String data = "";
-		try {
-			File f = new File(file);
-			Scanner myReader = new Scanner(f);
-			while (myReader.hasNextLine()) {
-				data += myReader.nextLine();
-			}
-			myReader.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		return data;
-	}
-
+	/**
+	 * Construye los diccionarios tanto de los atributos del fichero eventos como de
+	 * los tipos de eventos.
+	 * 
+	 * @param file: fichero con la especificaciones (eltl_property.txt)
+	 */
 	public static Map<String, String> identificaVariables(String file) {
 		String data = "";
 		Map<String, String> res = new HashMap<>();
@@ -78,7 +70,7 @@ public class Formula {
 					String event_name = sc.next(), event_id = sc.next();
 					event_type.put(event_id, event_name);
 				}
-
+				sc.close();
 			}
 
 			myReader.close();
@@ -90,58 +82,42 @@ public class Formula {
 	}
 
 	/**
+	 * Se encargará de construir el arbol de la propiedad
+	 * 
 	 * Mientras tiene el constructor del ejemplo
 	 * 
-	 * @param property
+	 * 
 	 */
 	public static Node construirArbol() {
-		Node node = new Node_Root(0, 11, null);
-		Node node1 = new Node_AND(1, 11, node);
-		Node node2 = new Node_OR(2, 11, node1);
-		Node node3 = new Node_NOT(3, 11, node2);
-		Node node4 = new Node_PHI(4, 11, node2, "RX_DATA <= 5");
-		Node node5 = new Node_PHI(5, 11, node3, "RX_DATA == 5");
-		Node node6 = new Node_AND(6, 11, node1);
-		Node node7 = new Node_PHI(7, 11, node6, "RX_DATA != 5");
-		Node node8 = new Node_OR(8, 11, node6);
-		Node node9 = new Node_PHI(9, 11, node8, "RX_DATA > 5");
-		Node node10 = new Node_PHI(10, 11, node8, "RX_DATA == 15");
+		// El arbol de ejemplo debe dar TRUE.
+		Node node = new Node_Root(0, 6);
+		((Node_Root) node).setDiccionario(event_type);
+
+		Node node1 = new Node_AND(1);
+		Node node2 = new Node_Always_P(2, "stt");
+		Node node3 = new Node_Eventually_PQ(3, "l", "h");
+		Node node4 = new Node_PHI(4, "RX_DATA > 10");
+		Node node5 = new Node_PHI(5, "RX_DATA == 30");
 
 		node.setSons(node1, null);
-		node1.setSons(node2, node6);
-		node2.setSons(node3, node4);
+		node1.setSons(node2, node3);
+		node2.setSons(node4, null);
 		node3.setSons(node5, null);
-		node6.setSons(node7, node8);
-		node8.setSons(node9, node10);
-
-		node4.setTimestamp("stt", "stp");
-		node5.setTimestamp("stt", "stp");
-		node7.setTimestamp("stt", "stp");
-		node9.setTimestamp("stt", "stp");
-		node10.setTimestamp("stt", "stp");
-
-		// Node node = new Node_Root(0, 5, null);
-		// Node node1 = new Node_NOT(1, 5, node);
-		// Node node2 = new Node_AND(2, 5, node1);
-		// Node node3 = new Node_PHI(3, 5, node2, "RX_DATA >= 5");
-		// Node node4 = new Node_PHI(4, 5, node2, "RX_DATA < 5");
-
-		// node.setSons(node1, null);
-		// node1.setSons(node2, null); /* Le damos los timestamps a los nodos phi. */
-		// node2.setSons(node3, node4);
-		// node3.setTimestamp("stt", "stp");
-		// node4.setTimestamp("stt", "stp");
 
 		return node;
 	}
 
 	/**
 	 * Para crear el arbol de manera artificial es necesario definir en el
-	 * constructor de la clase Main.Node: 1) Lo que se va a evaluar (actualmente
-	 * puede ser: TRUE, FALSE, NOT, OR, AND) 2) El identificador de nodo (es único y
-	 * será originado de forma secuencial por el programa, pero actualmente hay que
-	 * añadirlo manualmente) 3) El número total de nodos que va a tener el árbol 4)
-	 * El nodo padre del nodo actual. En caso de ser el nodo raiz, indicar null.
+	 * constructor de la clase Main.Node:
+	 * 
+	 * Si el nodo es Root: necesita su identificador y el total de nodos del arbol
+	 * 
+	 * Si el nodo es un nodo PHI: necesita identificador y expresion PHI a evaluar
+	 * (actualmente del tipo [atributo] [operador booleano] [Valor])
+	 * 
+	 * Si el nodo es un operador temporal: identificador, primer timestamp, segundo
+	 * timestamp(si define ambos)
 	 * 
 	 * Para indicar los hijos usar el metodo setSons() de la clase Main.Node. El
 	 * primer hijo será el de la izquierda y el segundo que se le indique el de la
@@ -150,35 +126,37 @@ public class Formula {
 	 * Se pretende que el árbol se construya preferentemente hacia la izquierda. Si
 	 * el nodo no tiene hijos, no hace falta usar el metodo setSons().
 	 * 
-	 * Es necesaria la existencia del nodo raiz, que tendrá como cadena a evaluar un
-	 * String vacio ("").
+	 * "eltl_property.txt" contiene las especificaciones de medidas y de tipos de
+	 * eventos. Para indicar que una columna del fichero events es un atributo, se
+	 * usa #define [nombre_atributo] [num columna].
 	 * 
-	 * "eltl_property.txt" Especifica
+	 * Para indicar los tipos de eventos que se encuentran en el fichero eventos, es
+	 * necesario la existencia de una columna con #define EVENTS [num columna] que
+	 * indique la columna que haya que traducir. Los tipos de eventos se indican
+	 * como #events [event_name] [id tipo evento]. El identificador de tipo de
+	 * evento debera ser valores que se encuentren en la columnna designada como
+	 * EVENTS.
+	 * 
 	 * 
 	 * IMPORTANTE:
 	 * 
-	 * NECESARIO EJECUTAR Formula AÑADIENDO COMO ARGUMENTO LA RUTA DEL FICHERO "events_0.txt"
-	 * NECESARIO EJECUTAR OnlineEvents AÑADIENDO COMO ARGUMENTO LA RUTA DEL FICHERO "eltl_property.txt"
-	 * NECESARIO EJECUTAR Formula PREVIAMENTE A OnlineEvents
+	 * NECESARIO EJECUTAR Formula AÑADIENDO COMO ARGUMENTO LA RUTA DEL FICHERO
+	 * "events_0.txt" NECESARIO EJECUTAR OnlineEvents AÑADIENDO COMO ARGUMENTO LA
+	 * RUTA DEL FICHERO "eltl_property.txt" NECESARIO EJECUTAR Formula PREVIAMENTE A
+	 * OnlineEvents
 	 * 
 	 * 
-	 * @param args[0]: ruta del fichero "events_0.txt". Especifica los eventos, asi como diferentes
-	 * 				   parametros o medidas del evento.
+	 * @param args[0]: ruta del fichero "events_0.txt". Especifica los eventos, asi
+	 *                 como diferentes parametros o medidas del evento.
 	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) throws InterruptedException {
-
-		// Sentencia lógica a evaluar:
-		// (NOT TRUE OR FALSE) AND (TRUE AND (TRUE OR TRUE))
-		// Se puede ver el arbol que se formaria en la carpeta src/main/resources
-		// String propiedad = leerPropiedad(args[0]);
-		Node raiz = construirArbol();
 		Map<String, String> variables = identificaVariables(args[0]);
-		((Node_Root) raiz).setDiccionario(event_type);
+		Node raiz = construirArbol(); // construye el arbol (por ahora el que esta indicado como ejemplo)
 		try {
-			System.out.println("Iniciada la recepcion de eventos");
 			DatagramSocket socketUDP = new DatagramSocket(PUERTO);
 			String mensaje = "";
+			// Llegada de eventos a traves de socket
 			while (!mensaje.equals("quit")) {
 				DatagramPacket peticion = new DatagramPacket(buffer, buffer.length);
 				socketUDP.receive(peticion);
@@ -200,6 +178,7 @@ public class Formula {
 						traza.put(var_name, dato);
 					}
 					((Node_Root) raiz).updateEventsTrace(traza);
+					sc.close();
 				}
 			}
 
