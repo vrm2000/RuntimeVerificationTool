@@ -1,0 +1,1 @@
+(Eventually_[stt,stp] RX_DATA > 14) || Always_[l,h] RX_DATA == 30 

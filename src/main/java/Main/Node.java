@@ -60,7 +60,7 @@ public abstract class Node extends Thread {
 	public Node(int id) {
 		this.id_nodo = id;
 		timestamps = new ArrayList<>();
-		conditions[id_nodo] = lock.newCondition();
+			conditions[id_nodo] = lock.newCondition();
 	}
 
 	/**

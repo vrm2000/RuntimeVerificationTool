@@ -17,6 +17,13 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>4.4</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.github.vbmacher</groupId>
+			<artifactId>java-cup</artifactId>
+			<version>11b</version>
+		</dependency>
+
 	</dependencies>
 
 </project>

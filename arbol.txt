@@ -1,0 +1,5 @@
+1 Eventually_ 2 stt stp  LEFT: 2
+2  PHI  RX_DATA > 14
+4 Always_ 2 l h  LEFT: 5
+5  PHI  RX_DATA == 30
+3 OR  LEFT: 1 RIGHT: 4

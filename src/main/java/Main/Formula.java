@@ -7,23 +7,32 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.StringJoiner;
 
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 import Operadores.Node_AND;
 import Operadores.Node_Always_P;
+import Operadores.Node_Always_PQ;
+import Operadores.Node_Eventually_P;
 import Operadores.Node_Eventually_PQ;
+import Operadores.Node_IMPLIES;
+import Operadores.Node_NOT;
+import Operadores.Node_OR;
 import Operadores.Node_PHI;
 import Operadores.Node_Root;
+import Parsing.Parsing;
 
 public class Formula {
 
 	final static int PUERTO = 7777;
 	static byte[] buffer = new byte[1024];
 	static Map<String, ArrayList<String>> datos = new HashMap<>();
+	private static int longitudArbol;
 	/*
 	 * EL bidimap nos permitirá saber que tipo de evento es cada uno cuando estos
 	 * esten expresados de forma numerica. La clave será el numero identificador de
@@ -81,29 +90,144 @@ public class Formula {
 		return res;
 	}
 
+	private static String imprimeFichero(String ruta) {
+		longitudArbol = 0;
+		StringJoiner sj = new StringJoiner("\n");
+		try {
+			Scanner sc = new Scanner(new File(ruta));
+
+			while (sc.hasNextLine()) {
+				sj.add(sc.nextLine());
+				longitudArbol++;
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return sj.toString();
+	}
+
 	/**
-	 * Se encargará de construir el arbol de la propiedad
+	 * Se encargará de construir el arbol de la propiedad. Dicha propiedad viene
+	 * especificada en el fichero "propiedad.txt". La propiedad debe estar separada
+	 * por espacios para una correcta lectura
 	 * 
-	 * Mientras tiene el constructor del ejemplo
+	 * Podremos encontrar una representacion que se le ha dado al arbol en el
+	 * fichero "arbol.txt" que este metodo genera
 	 * 
 	 * 
 	 */
 	public static Node construirArbol() {
-		// El arbol de ejemplo debe dar TRUE.
-		Node node = new Node_Root(0, 6);
+		String ruta = "propiedad.txt";
+		Parsing.parseado(ruta);
+		ruta = "arbol.txt";
+		String estructura_arbol = imprimeFichero(ruta);
+
+		Map<Integer, Node> listaNodos = new HashMap<>();
+		Map<Integer, List<Integer>> relacionHijos = new HashMap<>();
+		List<Integer> hijos = new ArrayList<>();
+		List<Integer> hijosCreados = new ArrayList<>();
+
+		Node node = new Node_Root(0, longitudArbol + 1);
 		((Node_Root) node).setDiccionario(event_type);
 
-		Node node1 = new Node_AND(1);
-		Node node2 = new Node_Always_P(2, "stt");
-		Node node3 = new Node_Eventually_PQ(3, "l", "h");
-		Node node4 = new Node_PHI(4, "RX_DATA > 10");
-		Node node5 = new Node_PHI(5, "RX_DATA == 30");
+		try (Scanner sc = new Scanner(estructura_arbol)) {
+			while (sc.hasNextLine()) {
+				String nodoExpr = sc.nextLine();
+				try (Scanner sc1 = new Scanner(nodoExpr)) {
+					int id = sc1.nextInt();
+					String nombreNodo = sc1.next().toUpperCase();
+					switch (nombreNodo) {
+					case "PHI":
+						String condicion = sc1.nextLine();
+						listaNodos.put(id, new Node_PHI(id, condicion));
+						break;
+					case "ALWAYS_":
+						if (sc1.nextInt() == 1) {
+							String timestamp = sc1.next();
+							listaNodos.put(id, new Node_Always_P(id, timestamp));
+						} else {
+							String timestamp1 = sc1.next();
+							String timestamp2 = sc1.next();
+							listaNodos.put(id, new Node_Always_PQ(id, timestamp1, timestamp2));
+						}
+						sc1.next();
+						hijos = new ArrayList<>();
+						hijos.add(sc1.nextInt());
+						relacionHijos.put(id, hijos);
+						break;
+					case "EVENTUALLY_":
+						if (sc1.nextInt() == 1) {
+							String timestamp = sc1.next();
+							listaNodos.put(id, new Node_Eventually_P(id, timestamp));
+						} else {
+							String timestamp1 = sc1.next();
+							String timestamp2 = sc1.next();
+							listaNodos.put(id, new Node_Eventually_PQ(id, timestamp1, timestamp2));
+						}
+						sc1.next();
+						hijos = new ArrayList<>();
+						hijos.add(sc1.nextInt());
+						relacionHijos.put(id, hijos);
+						break;
+					case "NOT":
+						listaNodos.put(id, new Node_NOT(id));
+						sc1.next();
+						hijos = new ArrayList<>();
+						hijos.add(sc1.nextInt());
+						relacionHijos.put(id, hijos);
+						break;
+					case "OR":
+						listaNodos.put(id, new Node_OR(id));
+						hijos = new ArrayList<>();
+						sc1.next();
+						hijos.add(sc1.nextInt());
+						sc1.next();
+						hijos.add(sc1.nextInt());
+						relacionHijos.put(id, hijos);
+						break;
+					case "AND":
+						listaNodos.put(id, new Node_AND(id));
+						hijos = new ArrayList<>();
+						sc1.next();
+						hijos.add(sc1.nextInt());
+						sc1.next();
+						hijos.add(sc1.nextInt());
+						relacionHijos.put(id, hijos);
+						break;
+					case "IMPLIES":
+						listaNodos.put(id, new Node_IMPLIES(id));
+						hijos = new ArrayList<>();
+						sc1.next();
+						hijos.add(sc1.nextInt());
+						sc1.next();
+						hijos.add(sc1.nextInt());
+						relacionHijos.put(id, hijos);
+						break;
 
-		node.setSons(node1, null);
-		node1.setSons(node2, node3);
-		node2.setSons(node4, null);
-		node3.setSons(node5, null);
+					}
+				}
+				hijosCreados.addAll(hijos);
+			}
+		}
 
+		int idx_hijo_principal = 0;
+		for (int i = 1; i <= longitudArbol; i++) {
+			if (!hijosCreados.contains(i)) {
+				idx_hijo_principal = i;
+			}
+		}
+
+		node.setSons(listaNodos.get(idx_hijo_principal), null);
+
+		for (Integer id : relacionHijos.keySet()) {
+			List<Integer> sons = relacionHijos.get(id);
+			if (sons.size() == 1) {
+				listaNodos.get(id).setSons(listaNodos.get(sons.get(0)), null);
+			} else {
+				listaNodos.get(id).setSons(listaNodos.get(sons.get(0)), listaNodos.get(sons.get(1)));
+			}
+
+		}
 		return node;
 	}
 
