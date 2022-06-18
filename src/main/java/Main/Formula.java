@@ -1,10 +1,13 @@
 package Main;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +28,7 @@ import Operadores.Node_NOT;
 import Operadores.Node_OR;
 import Operadores.Node_PHI;
 import Operadores.Node_Root;
+import Parsing.Escritor_Fichero;
 import Parsing.Parsing;
 
 public class Formula {
@@ -34,12 +38,13 @@ public class Formula {
 	static Map<String, ArrayList<String>> datos = new HashMap<>();
 	static Map<String, ArrayList<String>> eventos = new HashMap<>();
 	private static int longitudArbol;
+	public static boolean escritorFichero = false;
 	/*
-	 * EL bidimap nos permitirá saber que tipo de evento es cada uno cuando estos
-	 * esten expresados de forma numerica. La clave será el numero identificador de
+	 * El bidimap nos permitira saber que tipo de evento es cada uno cuando estos
+	 * esten expresados de forma numerica. La clave sera el numero identificador de
 	 * tipo y el segundo el nombre del tipo. Vease, si identificamos al evento stp
 	 * como 2 en nuestro fichero, esto nos permite saber que tipo de evento es. Para
-	 * definir la relación entre el número y el tipo de evento, hay que hacerlo en
+	 * definir la relacion entre el numero y el tipo de evento, hay que hacerlo en
 	 * el fichero eltl_property.txt
 	 */
 	static BidiMap<String, String> event_type = new DualHashBidiMap<>();
@@ -89,11 +94,15 @@ public class Formula {
 				sc.close();
 			}
 			myReader.close();
-
+			if (medidas.isEmpty()) {
+				System.err.println("No se ha especificado fichero de medidas en el fichero de especificaci�n " + file
+						+ "\n" + "Agrege la especificaci�n usando #define MEASURES_FILE <nombre_fichero>");
+				System.exit(1);
+			}
 			leerMedidas(medidas, res);
 
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.err.println("El fichero " + file + " de especificacion no existe en la ruta especificada");
 		}
 	}
 
@@ -124,15 +133,17 @@ public class Formula {
 			myReader.close();
 
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.err.println("Error en la lectura del fichero de medidas " + medidas
+					+ ". Compuebe que el fichero exista en la ruta especificada");
+			System.exit(1);
 		}
 	}
 
-	private static String imprimeFichero(String ruta) {
+	private static String imprimeFichero() {
 		longitudArbol = 0;
 		StringJoiner sj = new StringJoiner("\n");
 		try {
-			Scanner sc = new Scanner(new File(ruta));
+			Scanner sc = new Scanner(new File("arbol.txt"));
 
 			while (sc.hasNextLine()) {
 				sj.add(sc.nextLine());
@@ -156,26 +167,30 @@ public class Formula {
 	 * 
 	 * 
 	 */
-	public static Node construirArbol() {
-		String ruta = "propiedad.txt";
+	public static Node construirArbol(String property) {
 		try {
-			Parsing.parseado(ruta);
+			Parsing.parseado(property); // parseado a la propiedad y creacion del fichero "arbol.txt"
+		} catch (FileNotFoundException e) {
+			System.err.println("El fichero " + property + " no existe en la ruta especificada");
+			System.exit(1);
 		} catch (Exception e) {
 			System.err.println("Error al leer la propiedad. Verifique su sintaxis");
 			System.exit(1);
 		}
 
-		ruta = "arbol.txt";
-		String estructura_arbol = imprimeFichero(ruta);
+		String estructura_arbol = imprimeFichero(); // leemos fichero resultado del parsing de la propiedad
 
+		// estructuras necesarias para la creacion del arbol
 		Map<Integer, Node> listaNodos = new HashMap<>();
 		Map<Integer, List<Integer>> relacionHijos = new HashMap<>();
 		List<Integer> hijos = new ArrayList<>();
 		List<Integer> hijosCreados = new ArrayList<>();
 
+		// creamos raiz
 		Node node = new Node_Root(0, longitudArbol + 1);
 		((Node_Root) node).setDiccionario(event_type);
 
+		// creamos estructura del arbol analizando cada linea del resultado del parsing
 		try (Scanner sc = new Scanner(estructura_arbol)) {
 			while (sc.hasNextLine()) {
 				String nodoExpr = sc.nextLine();
@@ -265,6 +280,7 @@ public class Formula {
 
 		node.setSons(listaNodos.get(idx_hijo_principal), null);
 
+		// asignamos hijos
 		for (Integer id : relacionHijos.keySet()) {
 			List<Integer> sons = relacionHijos.get(id);
 			if (sons.size() == 1) {
@@ -274,7 +290,23 @@ public class Formula {
 			}
 
 		}
-		return node;
+		return node; // devolvemos nodo raiz con toda su estructura creada
+	}
+
+	private static String[] recopilaInformacion() {
+		String[] res = new String[3];
+		System.out.println("******************************");
+		System.out.println("Runtime Verification Tool");
+		System.out.println("******************************");
+		try (Scanner sc = new Scanner(System.in)) {
+			System.out.print("Introduzca fichero de especificaci�n de propiedades: ");
+			res[0] = sc.next();
+			System.out.print("Introduzca fichero con la propiedad: ");
+			res[1] = sc.next();
+			System.out.print("Indique si desea mostrar informacion por pantalla (N) o en el fichero \"log.txt\" (Y): ");
+			res[2] = sc.next();
+		}
+		return res;
 	}
 
 	/**
@@ -310,34 +342,50 @@ public class Formula {
 	 * 
 	 * IMPORTANTE:
 	 * 
-	 * NECESARIO EJECUTAR Formula AÑADIENDO COMO ARGUMENTO LA RUTA DEL FICHERO
-	 * "events_0.txt" NECESARIO EJECUTAR OnlineEvents AÑADIENDO COMO ARGUMENTO LA
+	 * NECESARIO EJECUTAR Formula A�ADIENDO COMO ARGUMENTO LA RUTA DEL FICHERO
+	 * "events_0.txt" NECESARIO EJECUTAR OnlineEvents A�ADIENDO COMO ARGUMENTO LA
 	 * RUTA DEL FICHERO "eltl_property.txt" NECESARIO EJECUTAR Formula PREVIAMENTE A
 	 * OnlineEvents
 	 * 
 	 * 
-	 * @param args[0]: ruta del fichero "events_0.txt". Especifica los eventos, asi
-	 *                 como diferentes parametros o medidas del evento.
 	 * @throws InterruptedException
+	 * @throws ParseException
+	 * @throws IOException
 	 */
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) {
+
+		if (args.length < 3) {
+			args = recopilaInformacion();
+		}
+
 		identificaVariables(args[0]);
-		Node raiz = construirArbol(); // construye el arbol (por ahora el que esta indicado como ejemplo)
+
+		Node raiz = construirArbol(args[1]); // construye el arbol (por ahora el que esta indicado como
+												// ejemplo)
 		((Node_Root) raiz).updateMedidas(datos);
+
+		if (!args[2].equals("N")) {
+			escritorFichero = true;
+			try {
+				Escritor_Fichero.fw = new FileWriter("log.txt");
+			} catch (IOException e) {
+				System.err.println("El fichero log.txt no existe");
+			}
+		}
+
 		datos.put("EVENTS", new ArrayList<>());
 		datos.put("EVENT_TSMP", new ArrayList<>());
-
 		try {
 			DatagramSocket socketUDP = new DatagramSocket(PUERTO);
 			String mensaje = "";
 			// Llegada de eventos a traves de socket
+			System.out.println("Esperando la recepcion de eventos...");
 			while (!mensaje.equals("quit")) {
 				DatagramPacket peticion = new DatagramPacket(buffer, buffer.length);
 				socketUDP.receive(peticion);
 				mensaje = new String(peticion.getData(), 0, peticion.getLength());
 				if (!mensaje.equals("quit")) {
 					Scanner sc = new Scanner(mensaje);
-					Map<String, String> traza = new HashMap<>();
 					String tsmp = sc.next() + " " + sc.next();
 					String ev = sc.next();
 					datos.get("EVENT_TSMP").add(tsmp);
@@ -364,7 +412,22 @@ public class Formula {
 		 * }
 		 */
 
-		System.out.println("Evaluacion de la propiedad: " + getResultado(raiz));
+		try {
+			boolean resultado = getResultado(raiz);
+			System.out.println("\nEvaluacion de la propiedad: " + resultado + "\n");
+			if (escritorFichero) {
+				System.out.println("Mas informacion en el fichero \"log.txt\"");
+				Desktop fichero = Desktop.getDesktop();
+				fichero.open(new File("log.txt"));
+				Escritor_Fichero.escritor("Evaluacion de la propiedad: " + resultado);
+			}
+		} catch (InterruptedException e) {
+			System.err.println("Error desconocido en el procesamiento de la propiedad");
+		} catch (IOException e) {
+			System.err.println("Error al abrir fichero de log");
+		}
+		if (escritorFichero)
+			Escritor_Fichero.cierre();
 
 	}
 

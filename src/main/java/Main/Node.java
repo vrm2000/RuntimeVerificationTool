@@ -272,7 +272,9 @@ public abstract class Node extends Thread {
 				}
 
 			} catch (ParseException e) {
-				e.printStackTrace();
+				System.err.println(
+						"Error en el parsing de timestamps de las trazas especificadas. Compruebe su sintaxis");
+				System.exit(1);
 			}
 		}
 	}

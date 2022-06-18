@@ -3,11 +3,11 @@ package Parsing;
 import java.io.FileWriter;
 
 public class Escritor_Fichero {
-	private static FileWriter fw;
+	public static FileWriter fw;
 
-	public Escritor_Fichero() {
+	public Escritor_Fichero(String ruta) {
 		try {
-			fw = new FileWriter("arbol.txt");
+			fw = new FileWriter(ruta);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

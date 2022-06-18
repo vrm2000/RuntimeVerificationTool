@@ -1,3 +1,0 @@
-2 Always_ 2 h l  LEFT: 3
-3  PHI  RSSI > -99
-1 Always_ 2 stt stp  LEFT: 2

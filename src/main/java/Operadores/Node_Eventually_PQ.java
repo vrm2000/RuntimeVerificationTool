@@ -1,6 +1,8 @@
 package Operadores;
 
+import Main.Formula;
 import Main.Node;
+import Parsing.Escritor_Fichero;
 
 public class Node_Eventually_PQ extends Node {
 
@@ -42,11 +44,18 @@ public class Node_Eventually_PQ extends Node {
 			k++;
 			cont = 0;
 		}
-		System.out.println("Node Eventually_PQ " + id_nodo + ":" + condicion);
+		String c = "Node EVENTUALLY_PQ " + id_nodo + ":" + condicion;
+		if (Formula.escritorFichero)
+			Escritor_Fichero.escritor(c);
+		else
+			System.out.println(c);
 		if (events_parent) {
-			System.out.println("Intervalo de condiciones Eventually_PQ: " + condIntervalo);
+			String c1 = "Intervalo de condiciones EVENTUALLY_PQ " + condIntervalo;
+			if (Formula.escritorFichero)
+				Escritor_Fichero.escritor(c1+"\n");
+			else
+				System.out.println(c1+"\n");
 		}
-		System.out.println();
 		return condicion;
 	}
 }

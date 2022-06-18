@@ -1,3 +1,4 @@
+
 package Main;
 
 import java.io.BufferedReader;
@@ -7,10 +8,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 public class OnlineEvents {
 
@@ -21,7 +18,7 @@ public class OnlineEvents {
 	 * 
 	 * @param args[0]: ruta del fichero con los eventos. Especifica los tipos de
 	 *                 eventos y algunas medidas adicionales
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	public static void main(String[] args) throws ParseException {
 		final int PUERTO_SERVIDOR = 7777;
@@ -48,6 +45,7 @@ public class OnlineEvents {
 			socketUDP.send(pregunta);
 			b.close();
 			socketUDP.close();
+
 		} catch (IOException ex) {
 			System.err.println(ex.getMessage());
 		}

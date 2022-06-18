@@ -6,7 +6,6 @@ package Parsing;// DO NOT EDIT
 import java_cup.runtime.Symbol;
 
 // See https://github.com/jflex-de/jflex/issues/222
-@SuppressWarnings("FallThrough")
 class Yylex implements java_cup.runtime.Scanner {
 
 	/** This character denotes the end of file. */

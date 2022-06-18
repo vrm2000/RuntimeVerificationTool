@@ -3,7 +3,9 @@ package Operadores;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Main.Formula;
 import Main.Node;
+import Parsing.Escritor_Fichero;
 
 public class Node_PHI extends Node {
 
@@ -44,10 +46,15 @@ public class Node_PHI extends Node {
 				comp2 = Double.parseDouble(sc.next());
 			}
 			for (int k = 0; k < tsmps_indexes.get("i").size(); k++) { // Para cada intervalo
-				System.out.println("	> Intervalo [" + tsmps_indexes.get("i").get(k) + "("
+				String c = "	> Intervalo [" + tsmps_indexes.get("i").get(k) + "("
 						+ trazas.get("TIME").get(tsmps_indexes.get("i").get(k)) + ")," + tsmps_indexes.get("j").get(k)
 						+ "(" + trazas.get("TIME").get(tsmps_indexes.get("j").get(k)) + ")]. " + prop.toUpperCase()
-						+ " " + op + " " + comp2 + ":");
+						+ " " + op + " " + comp2 + ":";
+				if (Formula.escritorFichero)
+					Escritor_Fichero.escritor(c);
+				else
+					System.out.println(c);
+
 				int cont = 0;
 				// Obtenemos inicio y fin del intervalo que esta siendo evaluado
 				int j = tsmps_indexes.get("j").get(k), i = tsmps_indexes.get("i").get(k);
@@ -79,8 +86,12 @@ public class Node_PHI extends Node {
 							break;
 						}
 					}
-					System.out.println("		>>Node PHI " + (cont + i) + ". Value: " + comp + ". "
-							+ condIntervalo.get(condIntervalo.size() - 1));
+					String c1 = "		>>Node PHI " + (cont + i) + ". Value: " + comp + ". "
+							+ condIntervalo.get(condIntervalo.size() - 1);
+					if (Formula.escritorFichero)
+						Escritor_Fichero.escritor(c1);
+					else
+						System.out.println(c1);
 					cont++;
 				}
 			}

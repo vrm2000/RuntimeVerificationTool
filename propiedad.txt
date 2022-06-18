@@ -1,1 +1,1 @@
-A_{stt,stp} (A_{h,l} RSSI > -99)
+A_{stt,stp} RSSI > -99

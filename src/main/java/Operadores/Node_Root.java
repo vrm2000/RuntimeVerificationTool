@@ -26,16 +26,6 @@ public class Node_Root extends Node {
 		event_type = e;
 	}
 
-	public void updateEventsTrace(Map<String, String> event) {
-		for (String key : event.keySet()) {
-			if (!trazas.containsKey(key))
-				trazas.put(key, new ArrayList<String>());
-			trazas.get(key).add(event.get(key));
-		}
-		System.out.println(trazas.get("EVENTS"));
-		System.out.println(trazas.get("EVENT_TSMP"));
-	}
-
 	public void updateMedidas(Map<String, ArrayList<String>> datos) {
 		trazas = datos;
 	}
