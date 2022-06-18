@@ -1,6 +1,9 @@
 package Main;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,7 +46,7 @@ public abstract class Node extends Thread {
 	public boolean events_parent = false; // Indica si el nodo padre es un operador temporal
 	public Map<String, List<Integer>> events_indexes; // Almacena los intervalos en los que se encuentra el timestamp
 														// indicado
-
+	public Map<String, List<Integer>> tsmps_indexes;
 	// Lista de booleanos para los operadores booleanos. Estos operadores centran su
 	// evaluacion sobre esta lista que pertenece a su hijo. El hijo debe guardar
 	// aqui cuando se cumple la propiedad establecida en los diferentes intervalos
@@ -60,7 +63,7 @@ public abstract class Node extends Thread {
 	public Node(int id) {
 		this.id_nodo = id;
 		timestamps = new ArrayList<>();
-			conditions[id_nodo] = lock.newCondition();
+		conditions[id_nodo] = lock.newCondition();
 	}
 
 	/**
@@ -82,7 +85,8 @@ public abstract class Node extends Thread {
 	 * asi como de indicar los timestamps a los nodos que sean hijo de un operador
 	 * temporal
 	 * 
-	 * Por defecto, si solo se tiene un hijo, el hijo izquierdo sera el que lo almacene.
+	 * Por defecto, si solo se tiene un hijo, el hijo izquierdo sera el que lo
+	 * almacene.
 	 * 
 	 * @param node1: hijo izquierdo
 	 * @param node2: hijo derecho
@@ -102,7 +106,7 @@ public abstract class Node extends Thread {
 				// Si es un nodo temporal que solo evalua de P en adelante y esta siendo
 				// evaluado por un padre que es otro nodo temporal. El ultimo evento que evalua
 				// debe ser el ultimo evento del nodo padre
-				if (node1.timestamps.size() <= 1 && timestamps.size()>1) {
+				if (node1.timestamps.size() <= 1 && timestamps.size() > 1) {
 					node1.timestamps.add(this.timestamps.get(1));
 				}
 			}
@@ -137,7 +141,9 @@ public abstract class Node extends Thread {
 	}
 
 	/**
-	 * Obtiene los intervalos que estan comprendidos entre los eventos pasados en el parametro tsmp
+	 * Obtiene los intervalos que estan comprendidos entre los eventos pasados en el
+	 * parametro tsmp
+	 * 
 	 * @param tsmp
 	 * @return
 	 */
@@ -149,6 +155,7 @@ public abstract class Node extends Thread {
 		// Si el padre sabe los intervalos donde mirar, lo cogemos de el (Node_PHI)
 		if (pnt != null && pnt.events_indexes != null) {
 			res = pnt.events_indexes;
+			tsmps_indexes = pnt.tsmps_indexes;
 		} else {
 			// Si el padre no tiene los intervalos, miramos en toda la traza
 			auxGetIndex(res, 0, trazas.get("EVENTS").size(), tsmp);
@@ -191,18 +198,17 @@ public abstract class Node extends Thread {
 	 */
 	private void auxGetIndex(Map<String, List<Integer>> res, int i, int limit, List<String> tsmp) {
 		Iterator<String> it = trazas.get("EVENTS").iterator();
-		for(int x=0;x<i;x++) {
+		for (int x = 0; x < i; x++) {
 			it.next();
 		}
 		boolean buscoI = true;
-		while (it.hasNext() && i < limit) {
+		while (it.hasNext() && i <= limit) {
 			String event = it.next();
 			// Buscamos los intervalos por pares ij.
 			if (buscoI && event.equalsIgnoreCase(getEvent(tsmp.get(0)))) {
 				res.get("i").add(i);
 				buscoI = false; // Cuando encuentra un evento i, inicia la busqueda del evento j
-			}
-			if (tsmp.size() > 1 && !buscoI && event.equalsIgnoreCase(getEvent(tsmp.get(1)))) {
+			} else if (tsmp.size() > 1 && !buscoI && event.equalsIgnoreCase(getEvent(tsmp.get(1)))) {
 				res.get("j").add(i);
 				buscoI = true; // Cuando encuentra el evento j asociado al evento i, vuelve a buscar nuevo
 								// intervalo
@@ -216,7 +222,59 @@ public abstract class Node extends Thread {
 		if (!buscoI) { // Si un intervalo ha quedado sin cerrar (no se ha llegado a encontrar j)
 			res.get("i").remove(res.get("i").size() - 1); // Eliminamos el inicio de dicho intervalo (i).
 		}
+		if (res.get("i").size() == 0) {
+			System.err.println("No se ha encontrado el intervalo [" + tsmp.get(0) + "," + tsmp.get(1) + "]");
+			System.exit(1);
+		}
+		getTsmpIndexes(res);
+	}
 
+	private void getTsmpIndexes(Map<String, List<Integer>> res) {
+		tsmps_indexes = new HashMap<>();
+		tsmps_indexes.put("i", new ArrayList<>());
+		tsmps_indexes.put("j", new ArrayList<>());
+		int k = 0;
+		for (int l = 0; l < res.get("i").size(); l++) {
+			int i = res.get("i").get(l), j = res.get("j").get(l);
+			String inicio = trazas.get("EVENT_TSMP").get(i);
+			String fin = trazas.get("EVENT_TSMP").get(j);
+
+			String t = trazas.get("TIME").get(k);
+			SimpleDateFormat parser = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S");
+			Date date, date1, date2;
+			try {
+				date = parser.parse(t);
+				date1 = parser.parse(inicio);
+				date2 = parser.parse(fin);
+				while (date.before(date1) && k < trazas.get("TIME").size()) {
+					k++;
+					t = trazas.get("TIME").get(k);
+					date = parser.parse(t);
+				}
+
+				if (k < trazas.get("TIME").size()) {
+					tsmps_indexes.get("i").add(k);
+				} else {
+					System.err.println("No se ha encontrado ninguna medida entre los timestamps especificados");
+					System.exit(1);
+				}
+				while (date.before(date2) && k < trazas.get("TIME").size()) {
+					k++;
+					t = trazas.get("TIME").get(k);
+					date = parser.parse(t);
+				}
+
+				if (k < trazas.get("TIME").size()) {
+					tsmps_indexes.get("j").add(k);
+				} else {
+					System.err.println("No se ha encontrado ninguna medida entre los timestamps especificados");
+					System.exit(1);
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public abstract boolean evaluarCondicion();

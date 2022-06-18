@@ -1,10 +1,14 @@
-#define DATE 0
-#define TSP 1
-#define EVENTS 2
+#define TIME 0
+#define RSSI 1
+#define RSRP 2
 #define RX_DATA 3
+#define RX_DATARATE 4
+#define TX_DATA 5
+#define TX_DATARATE 6
 #events start_end 0
 #events stt 1
 #events stp 2
 #events fp 3
 #events l 4
 #events h 5
+#define MEASURES_FILE "measures_0.txt"

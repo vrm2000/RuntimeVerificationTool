@@ -1,1 +1,1 @@
-(Eventually_[stt,stp] RX_DATA > 14) || Always_[l,h] RX_DATA == 30 
+A_{stt,stp} (A_{h,l} RSSI > -99)

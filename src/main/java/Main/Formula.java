@@ -32,6 +32,7 @@ public class Formula {
 	final static int PUERTO = 7777;
 	static byte[] buffer = new byte[1024];
 	static Map<String, ArrayList<String>> datos = new HashMap<>();
+	static Map<String, ArrayList<String>> eventos = new HashMap<>();
 	private static int longitudArbol;
 	/*
 	 * EL bidimap nos permitirá saber que tipo de evento es cada uno cuando estos
@@ -57,22 +58,28 @@ public class Formula {
 	 * 
 	 * @param file: fichero con la especificaciones (eltl_property.txt)
 	 */
-	public static Map<String, String> identificaVariables(String file) {
+	public static void identificaVariables(String file) {
 		String data = "";
 		Map<String, String> res = new HashMap<>();
 		try {
 			File f = new File(file);
 			Scanner myReader = new Scanner(f);
+			String medidas = "";
 			while (myReader.hasNextLine()) {
 				data = myReader.nextLine();
 				Scanner sc = new Scanner(data);
-
 				String id = "";
 				if (sc.hasNext())
 					id = sc.next();
 				if (id.equalsIgnoreCase("#define")) {
-					String var_name = sc.next(), event_id = sc.next();
-					res.put(event_id, var_name);
+					String var_name = sc.next(), event_id = "";
+					if (var_name.equalsIgnoreCase("MEASURES_FILE")) {
+						medidas = sc.next();
+						medidas = medidas.substring(1, medidas.length() - 1);
+					} else {
+						event_id = sc.next();
+						res.put(event_id, var_name.toUpperCase());
+					}
 				}
 
 				if (id.equalsIgnoreCase("#events")) {
@@ -81,13 +88,44 @@ public class Formula {
 				}
 				sc.close();
 			}
-
 			myReader.close();
+
+			leerMedidas(medidas, res);
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
 
-		return res;
+	private static void leerMedidas(String medidas, Map<String, String> res) {
+		try {
+			File f = new File(medidas);
+			Scanner myReader = new Scanner(f);
+			while (myReader.hasNext()) {
+				String data = myReader.nextLine();
+				Scanner scmed = new Scanner(data);
+				int i = 0;
+				while (scmed.hasNext()) {
+					String var_name = res.get(Integer.toString(i));
+					if (!datos.containsKey(var_name)) {
+						datos.put(var_name, new ArrayList<String>());
+					}
+					String medida = "";
+					if (var_name == res.get("0")) {
+						medida = scmed.next() + " " + scmed.next();
+					} else {
+						medida = scmed.next();
+					}
+					datos.get(var_name).add(medida);
+					i++;
+				}
+				scmed.close();
+			}
+			myReader.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static String imprimeFichero(String ruta) {
@@ -112,13 +150,21 @@ public class Formula {
 	 * por espacios para una correcta lectura
 	 * 
 	 * Podremos encontrar una representacion que se le ha dado al arbol en el
-	 * fichero "arbol.txt" que este metodo genera
+	 * fichero "arbol.txt" que este metodo genera.
+	 * 
+	 * 
 	 * 
 	 * 
 	 */
 	public static Node construirArbol() {
 		String ruta = "propiedad.txt";
-		Parsing.parseado(ruta);
+		try {
+			Parsing.parseado(ruta);
+		} catch (Exception e) {
+			System.err.println("Error al leer la propiedad. Verifique su sintaxis");
+			System.exit(1);
+		}
+
 		ruta = "arbol.txt";
 		String estructura_arbol = imprimeFichero(ruta);
 
@@ -275,8 +321,12 @@ public class Formula {
 	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) throws InterruptedException {
-		Map<String, String> variables = identificaVariables(args[0]);
+		identificaVariables(args[0]);
 		Node raiz = construirArbol(); // construye el arbol (por ahora el que esta indicado como ejemplo)
+		((Node_Root) raiz).updateMedidas(datos);
+		datos.put("EVENTS", new ArrayList<>());
+		datos.put("EVENT_TSMP", new ArrayList<>());
+
 		try {
 			DatagramSocket socketUDP = new DatagramSocket(PUERTO);
 			String mensaje = "";
@@ -287,30 +337,32 @@ public class Formula {
 				mensaje = new String(peticion.getData(), 0, peticion.getLength());
 				if (!mensaje.equals("quit")) {
 					Scanner sc = new Scanner(mensaje);
-					int i = 0;
-					String dato = "";
-					String var_name = "";
 					Map<String, String> traza = new HashMap<>();
-					while (sc.hasNext()) {
-						var_name = variables.get(Integer.toString(i));
-						dato = sc.next();
-						if (!datos.containsKey(var_name)) {
-							datos.put(var_name, new ArrayList<String>());
-						}
-						datos.get(var_name).add(dato);
-						i++;
-						traza.put(var_name, dato);
-					}
-					((Node_Root) raiz).updateEventsTrace(traza);
+					String tsmp = sc.next() + " " + sc.next();
+					String ev = sc.next();
+					datos.get("EVENT_TSMP").add(tsmp);
+					datos.get("EVENTS").add(ev);
 					sc.close();
 				}
 			}
 
 			socketUDP.close();
-
 		} catch (IOException ex) {
 			System.err.println(ex.getMessage());
 		}
+
+		/*
+		 * for (String k : datos.keySet()) { System.out.println(k + ":" + datos.get(k));
+		 * }
+		 * 
+		 * 
+		 * SimpleDateFormat parser = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S"); Date
+		 * date, date1; try { date1 = parser.parse("1-10-2018 11:12:37.3"); for(String s
+		 * : datos.get("EVENT_TSMP")) { date = parser.parse(s); String formattedDate =
+		 * parser.format(date); System.out.println(date.before(date1)); } } catch
+		 * (ParseException e) { // TODO Auto-generated catch block e.printStackTrace();
+		 * }
+		 */
 
 		System.out.println("Evaluacion de la propiedad: " + getResultado(raiz));
 

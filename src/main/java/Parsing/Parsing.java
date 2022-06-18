@@ -8,15 +8,10 @@ import java.io.Reader;
 public class Parsing {
 	public static PrintStream out;
 
-	public static void parseado(String argv) {
-		try {
-			Reader in = new InputStreamReader(System.in);
-			in = new FileReader(argv);
-			parser p = new parser(new Yylex(in));
-			Object result = p.parse().value;
-			Escritor_Fichero.cierre();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public static void parseado(String argv) throws Exception {
+		Reader in = new FileReader(argv); // leemos del archivo pasado como parametro
+		parser p = new parser(new Yylex(in)); // creamos objeto parser
+		Object result = p.parse().value; // evaluamos expresion
+		Escritor_Fichero.cierre();
 	}
 }

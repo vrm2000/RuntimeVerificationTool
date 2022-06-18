@@ -12,17 +12,22 @@ public class Node_Eventually_PQ extends Node {
 
 	@Override
 	public boolean evaluarCondicion() {
+		if (events_indexes.size() == 0) {
+			System.err.println(
+					"Error. No se ha encontrado ningun intervalo entre los eventos mencionados: " + timestamps);
+			System.exit(1);
+		}
 		int cont = 0, offset = 0;
 		boolean condicion = true;
 		int k = 0;
 		// Comprueba para cada intervalo
-		while (k < events_indexes.get("i").size() && condicion) {
+		while (k < tsmps_indexes.get("i").size() && condicion) {
 			int subtotal = 0;
 			// obtiene el numero de intervalos a evaluar
-			if (events_parent) {
+			if (tsmps_indexes.get("i").size() == 1) {
 				subtotal = lft.condIntervalo.size(); // Longitud del intervalo del hijo
 			} else {
-				subtotal = events_indexes.get("j").get(k) - events_indexes.get("i").get(k) + 1;
+				subtotal = tsmps_indexes.get("j").get(k) - tsmps_indexes.get("i").get(k) + 1;
 			}
 			while (cont < subtotal && !lft.condIntervalo.get(cont + offset)) {
 				cont++;
