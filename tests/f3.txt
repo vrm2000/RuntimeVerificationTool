@@ -1,0 +1,1 @@
+A_{stt,stp} (E_{fp} true)

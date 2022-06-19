@@ -1,0 +1,11 @@
+******************************
+Evaluacion de la propiedad: 
+	A_{stt,stp} (E_{fp} true)
+
+Busqueda de intervalo [fp,stp] dentro del intervalo 1 [stt,stp] 
+	> Intervalo no existente entre [fp,stp]. false
+Node EVENTUALLY_P 2:false
+Intervalo de condiciones EVENTUALLY_P [false]
+
+Node ALWAYS_PQ 1:false
+Evaluacion de la propiedad: false

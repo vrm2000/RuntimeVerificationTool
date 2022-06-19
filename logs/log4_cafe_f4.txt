@@ -1,0 +1,26 @@
+******************************
+Evaluacion de la propiedad: 
+	A_{stt,stp} (A_{h,l} RSSI > -99)
+
+Busqueda de intervalo [h,l] dentro del intervalo 1 [stt,stp] 
+	> Intervalo 1 [33(27-9-2018 18:9:15.3),47(27-9-2018 18:9:29.5)]. RSSI > -99.0:
+		>>Node PHI 33. Value: -89.0. true
+		>>Node PHI 34. Value: -89.0. true
+		>>Node PHI 35. Value: -89.0. true
+		>>Node PHI 36. Value: -89.0. true
+		>>Node PHI 37. Value: -89.0. true
+		>>Node PHI 38. Value: -86.0. true
+		>>Node PHI 39. Value: -88.0. true
+		>>Node PHI 40. Value: -88.0. true
+		>>Node PHI 41. Value: -88.0. true
+		>>Node PHI 42. Value: -88.0. true
+		>>Node PHI 43. Value: -88.0. true
+		>>Node PHI 44. Value: -88.0. true
+		>>Node PHI 45. Value: -88.0. true
+		>>Node PHI 46. Value: -88.0. true
+		>>Node PHI 47. Value: -88.0. true
+Node ALWAYS_PQ 2:true
+Intervalo de condiciones ALWAYS_PQ [true]
+
+Node ALWAYS_PQ 1:true
+Evaluacion de la propiedad: true

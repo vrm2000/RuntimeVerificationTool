@@ -11,4 +11,4 @@
 #events fp 3
 #events l 4
 #events h 5
-#define MEASURES_FILE "measures_0.txt"
+#define MEASURES_FILE "./tests/measures_6.txt"

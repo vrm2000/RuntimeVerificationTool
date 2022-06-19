@@ -196,8 +196,12 @@ public abstract class Node extends Thread {
 	 * @param limit
 	 * @param tsmp
 	 */
-	private void auxGetIndex(Map<String, List<Integer>> res, int i, int limit, List<String> tsmp) {
+	private void auxGetIndex(Map<String, List<Integer>> res, int inicio, int limit, List<String> tsmp) {
+		int i = inicio;
 		Iterator<String> it = trazas.get("EVENTS").iterator();
+		Map<String, List<Integer>> aux = new HashMap<>();
+		aux.put("i", new ArrayList<>());
+		aux.put("j", new ArrayList<>());
 		for (int x = 0; x < i; x++) {
 			it.next();
 		}
@@ -206,25 +210,30 @@ public abstract class Node extends Thread {
 			String event = it.next();
 			// Buscamos los intervalos por pares ij.
 			if (buscoI && event.equalsIgnoreCase(getEvent(tsmp.get(0)))) {
-				res.get("i").add(i);
+				aux.get("i").add(i);
 				buscoI = false; // Cuando encuentra un evento i, inicia la busqueda del evento j
 			} else if (tsmp.size() > 1 && !buscoI && event.equalsIgnoreCase(getEvent(tsmp.get(1)))) {
-				res.get("j").add(i);
+				aux.get("j").add(i);
 				buscoI = true; // Cuando encuentra el evento j asociado al evento i, vuelve a buscar nuevo
 								// intervalo
 			}
 			i++;
 		}
 		if (tsmp.size() <= 1) {
-			res.get("j").add(trazas.get("EVENTS").size() - 1);
+			aux.get("j").add(trazas.get("EVENTS").size() - 1);
 			buscoI = true;
 		}
 		if (!buscoI) { // Si un intervalo ha quedado sin cerrar (no se ha llegado a encontrar j)
-			res.get("i").remove(res.get("i").size() - 1); // Eliminamos el inicio de dicho intervalo (i).
+			aux.get("i").remove(aux.get("i").size() - 1); // Eliminamos el inicio de dicho intervalo (i).
 		}
-		if (res.get("i").size() == 0) {
-			System.err.println("No se ha encontrado el intervalo [" + tsmp.get(0) + "," + tsmp.get(1) + "]");
-			System.exit(1);
+		if (aux.get("i").size() > 0) {
+			for (int n = 0; n < aux.get("i").size(); n++) {
+				res.get("i").add(aux.get("i").get(n));
+				res.get("j").add(aux.get("j").get(n));
+			}
+		} else {
+			res.get("i").add(-1);
+			res.get("j").add(-1);
 		}
 		getTsmpIndexes(res);
 	}
@@ -234,47 +243,56 @@ public abstract class Node extends Thread {
 		tsmps_indexes.put("i", new ArrayList<>());
 		tsmps_indexes.put("j", new ArrayList<>());
 		int k = 0;
+		if (pnt.tsmps_indexes != null) {
+			k = pnt.tsmps_indexes.get("i").get(0);
+		}
 		for (int l = 0; l < res.get("i").size(); l++) {
 			int i = res.get("i").get(l), j = res.get("j").get(l);
-			String inicio = trazas.get("EVENT_TSMP").get(i);
-			String fin = trazas.get("EVENT_TSMP").get(j);
+			if (i == -1 && j == -1) {
+				tsmps_indexes.get("i").add(-1);
+				tsmps_indexes.get("j").add(-1);
+			} else {
+				String inicio = trazas.get("EVENT_TSMP").get(i);
+				String fin = trazas.get("EVENT_TSMP").get(j);
 
-			String t = trazas.get("TIME").get(k);
-			SimpleDateFormat parser = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S");
-			Date date, date1, date2;
-			try {
-				date = parser.parse(t);
-				date1 = parser.parse(inicio);
-				date2 = parser.parse(fin);
-				while (date.before(date1) && k < trazas.get("TIME").size()) {
-					k++;
-					t = trazas.get("TIME").get(k);
+				String t = trazas.get("TIME").get(k);
+				SimpleDateFormat parser = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S");
+				Date date, date1, date2;
+				try {
 					date = parser.parse(t);
-				}
+					date1 = parser.parse(inicio);
+					date2 = parser.parse(fin);
+					while (date.before(date1) && !date.after(date2) && k < trazas.get("TIME").size()) {
+						k++;
+						t = trazas.get("TIME").get(k);
+						date = parser.parse(t);
+					}
 
-				if (k < trazas.get("TIME").size()) {
-					tsmps_indexes.get("i").add(k);
-				} else {
-					System.err.println("No se ha encontrado ninguna medida entre los timestamps especificados");
+					if (k < trazas.get("TIME").size()) {
+						tsmps_indexes.get("i").add(k);
+					} else {
+						System.err.println("No se ha encontrado ninguna medida entre los timestamps especificados");
+						System.exit(1);
+					}
+					while (date.before(date2) && k < trazas.get("TIME").size()) {
+						k++;
+						t = trazas.get("TIME").get(k);
+						date = parser.parse(t);
+					}
+					k--;
+
+					if (k < trazas.get("TIME").size() - 1) {
+						tsmps_indexes.get("j").add(k);
+					} else {
+						System.err.println("No se ha encontrado ninguna medida entre los timestamps especificados");
+						System.exit(1);
+					}
+
+				} catch (ParseException e) {
+					System.err.println(
+							"Error en el parsing de timestamps de las trazas especificadas. Compruebe su sintaxis");
 					System.exit(1);
 				}
-				while (date.before(date2) && k < trazas.get("TIME").size()) {
-					k++;
-					t = trazas.get("TIME").get(k);
-					date = parser.parse(t);
-				}
-
-				if (k < trazas.get("TIME").size()) {
-					tsmps_indexes.get("j").add(k);
-				} else {
-					System.err.println("No se ha encontrado ninguna medida entre los timestamps especificados");
-					System.exit(1);
-				}
-
-			} catch (ParseException e) {
-				System.err.println(
-						"Error en el parsing de timestamps de las trazas especificadas. Compruebe su sintaxis");
-				System.exit(1);
 			}
 		}
 	}

@@ -26,7 +26,7 @@ public class Node_Eventually_PQ extends Node {
 		while (k < tsmps_indexes.get("i").size() && condicion) {
 			int subtotal = 0;
 			// obtiene el numero de intervalos a evaluar
-			if (tsmps_indexes.get("i").size() == 1) {
+			if (tsmps_indexes.get("i").size() == 1 || lft.events_parent) {
 				subtotal = lft.condIntervalo.size(); // Longitud del intervalo del hijo
 			} else {
 				subtotal = tsmps_indexes.get("j").get(k) - tsmps_indexes.get("i").get(k) + 1;
@@ -41,7 +41,7 @@ public class Node_Eventually_PQ extends Node {
 				// de cada intervalo en la lista de las evaluaciones de operadores temporales
 				condIntervalo.add(cont < subtotal);
 			}
-			k++;
+			k = lft.events_parent ? tsmps_indexes.get("i").size() : k + 1;
 			cont = 0;
 		}
 		String c = "Node EVENTUALLY_PQ " + id_nodo + ":" + condicion;
@@ -52,9 +52,9 @@ public class Node_Eventually_PQ extends Node {
 		if (events_parent) {
 			String c1 = "Intervalo de condiciones EVENTUALLY_PQ " + condIntervalo;
 			if (Formula.escritorFichero)
-				Escritor_Fichero.escritor(c1+"\n");
+				Escritor_Fichero.escritor(c1 + "\n");
 			else
-				System.out.println(c1+"\n");
+				System.out.println(c1 + "\n");
 		}
 		return condicion;
 	}

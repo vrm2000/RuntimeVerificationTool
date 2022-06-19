@@ -25,7 +25,7 @@ public class Node_Always_P extends Node {
 
 		while (k < tsmps_indexes.get("i").size()) {
 			int subtotal = 0;
-			if (tsmps_indexes.get("i").size() == 1) {
+			if (tsmps_indexes.get("i").size() == 1 || lft.events_parent){
 				subtotal = lft.condIntervalo.size();
 			} else {
 				subtotal = tsmps_indexes.get("j").get(k) - tsmps_indexes.get("i").get(k) + 1;
@@ -39,7 +39,7 @@ public class Node_Always_P extends Node {
 				condIntervalo.add(cont >= subtotal);
 			}
 			cont = 0;
-			k++;
+			k = lft.events_parent ? tsmps_indexes.get("i").size() : k + 1;
 		}
 		String c = "Node ALWAYS_P " + id_nodo + ":" + condicion;
 		if (Formula.escritorFichero)

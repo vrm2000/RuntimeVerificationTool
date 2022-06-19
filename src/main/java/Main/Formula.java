@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,8 +97,8 @@ public class Formula {
 			}
 			myReader.close();
 			if (medidas.isEmpty()) {
-				System.err.println("No se ha especificado fichero de medidas en el fichero de especificación " + file
-						+ "\n" + "Agrege la especificación usando #define MEASURES_FILE <nombre_fichero>");
+				System.err.println("No se ha especificado fichero de medidas en el fichero de especificaciï¿½n " + file
+						+ "\n" + "Agrege la especificaciï¿½n usando #define MEASURES_FILE <nombre_fichero>");
 				System.exit(1);
 			}
 			leerMedidas(medidas, res);
@@ -107,6 +109,8 @@ public class Formula {
 	}
 
 	private static void leerMedidas(String medidas, Map<String, String> res) {
+		Date anterior = null, actual = null;
+		SimpleDateFormat parser = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S");
 		try {
 			File f = new File(medidas);
 			Scanner myReader = new Scanner(f);
@@ -121,7 +125,31 @@ public class Formula {
 					}
 					String medida = "";
 					if (var_name == res.get("0")) {
-						medida = scmed.next() + " " + scmed.next();
+						medida = scmed.next();
+						String dia, mes, year = "";
+						try (Scanner trim = new Scanner(medida)) {
+							trim.useDelimiter("[-]");
+							dia = trim.next();
+							mes = trim.next();
+							year = trim.next();
+							if (year.length() < 4) {
+								year = "20" + year;
+							}
+						}
+						medida = dia + "-" + mes + "-" + year + " " + scmed.next();
+						if (!medida.contains("."))
+							medida = medida.concat(".0"); // aÃ±adimos terminacion para poder parsear correctamente
+						if (anterior == null) {
+							anterior = parser.parse(medida);
+						} else {
+							actual = parser.parse(medida);
+							if (actual.before(anterior)) {
+								scmed.close();
+								throw new IllegalArgumentException();
+							}
+							anterior = actual;
+						}
+
 					} else {
 						medida = scmed.next();
 					}
@@ -132,9 +160,14 @@ public class Formula {
 			}
 			myReader.close();
 
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException | ParseException e) {
 			System.err.println("Error en la lectura del fichero de medidas " + medidas
 					+ ". Compuebe que el fichero exista en la ruta especificada");
+			System.exit(1);
+		} catch (IllegalArgumentException e) {
+			System.err.println("Error en el fichero de medidas. No se cumple la propiedad de"
+					+ " definicion eLTL 1, donde ti < tf en todos los intervalos." + " En especifico: "
+					+ parser.format(anterior).toString() + " y " + parser.format(actual).toString());
 			System.exit(1);
 		}
 	}
@@ -295,11 +328,8 @@ public class Formula {
 
 	private static String[] recopilaInformacion() {
 		String[] res = new String[3];
-		System.out.println("******************************");
-		System.out.println("Runtime Verification Tool");
-		System.out.println("******************************");
 		try (Scanner sc = new Scanner(System.in)) {
-			System.out.print("Introduzca fichero de especificación de propiedades: ");
+			System.out.print("Introduzca fichero de especificacion de propiedades: ");
 			res[0] = sc.next();
 			System.out.print("Introduzca fichero con la propiedad: ");
 			res[1] = sc.next();
@@ -342,17 +372,22 @@ public class Formula {
 	 * 
 	 * IMPORTANTE:
 	 * 
-	 * NECESARIO EJECUTAR Formula AÑADIENDO COMO ARGUMENTO LA RUTA DEL FICHERO
-	 * "events_0.txt" NECESARIO EJECUTAR OnlineEvents AÑADIENDO COMO ARGUMENTO LA
+	 * NECESARIO EJECUTAR Formula Aï¿½ADIENDO COMO ARGUMENTO LA RUTA DEL FICHERO
+	 * "events_0.txt" NECESARIO EJECUTAR OnlineEvents Aï¿½ADIENDO COMO ARGUMENTO LA
 	 * RUTA DEL FICHERO "eltl_property.txt" NECESARIO EJECUTAR Formula PREVIAMENTE A
 	 * OnlineEvents
+	 * 
+	 * @throws FileNotFoundException
 	 * 
 	 * 
 	 * @throws InterruptedException
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
+		System.out.println("******************************");
+		System.out.println("Runtime Verification Tool");
+		System.out.println("******************************");
 
 		if (args.length < 3) {
 			args = recopilaInformacion();
@@ -373,8 +408,19 @@ public class Formula {
 			}
 		}
 
+		String c1 = "******************************\n" + "Evaluacion de la propiedad: \n\t";
+		try (Scanner sc = new Scanner(new File(args[1]))) {
+			c1 += sc.nextLine();
+		}
+		if (Formula.escritorFichero)
+			Escritor_Fichero.escritor(c1 + "\n");
+
+		System.out.println(c1 + "\n");
+
 		datos.put("EVENTS", new ArrayList<>());
 		datos.put("EVENT_TSMP", new ArrayList<>());
+		Date anterior = null, actual = null;
+		SimpleDateFormat parser = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S");
 		try {
 			DatagramSocket socketUDP = new DatagramSocket(PUERTO);
 			String mensaje = "";
@@ -391,32 +437,34 @@ public class Formula {
 					datos.get("EVENT_TSMP").add(tsmp);
 					datos.get("EVENTS").add(ev);
 					sc.close();
+					if (anterior == null) {
+						anterior = parser.parse(tsmp);
+					} else {
+						actual = parser.parse(tsmp);
+						if (actual.before(anterior)) {
+							sc.close();
+							throw new IllegalArgumentException();
+						}
+						anterior = actual;
+					}
 				}
 			}
 
 			socketUDP.close();
-		} catch (IOException ex) {
+		} catch (IOException | ParseException ex) {
 			System.err.println(ex.getMessage());
+		} catch (IllegalArgumentException e) {
+			System.err.println("Error en el fichero de eventos. No se cumple la propiedad de"
+					+ " definicion eLTL 1, donde ti < tf en todos los intervalos." + " En especifico: "
+					+ parser.format(anterior).toString() + " y " + parser.format(actual).toString());
+			System.exit(1);
 		}
-
-		/*
-		 * for (String k : datos.keySet()) { System.out.println(k + ":" + datos.get(k));
-		 * }
-		 * 
-		 * 
-		 * SimpleDateFormat parser = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S"); Date
-		 * date, date1; try { date1 = parser.parse("1-10-2018 11:12:37.3"); for(String s
-		 * : datos.get("EVENT_TSMP")) { date = parser.parse(s); String formattedDate =
-		 * parser.format(date); System.out.println(date.before(date1)); } } catch
-		 * (ParseException e) { // TODO Auto-generated catch block e.printStackTrace();
-		 * }
-		 */
 
 		try {
 			boolean resultado = getResultado(raiz);
-			System.out.println("\nEvaluacion de la propiedad: " + resultado + "\n");
+			System.out.println("\nResultado de evaluacion de la propiedad: " + resultado + "\n");
 			if (escritorFichero) {
-				System.out.println("Mas informacion en el fichero \"log.txt\"");
+				System.out.println("Mas informacion en el ultimo fichero de log correspondiente");
 				Desktop fichero = Desktop.getDesktop();
 				fichero.open(new File("log.txt"));
 				Escritor_Fichero.escritor("Evaluacion de la propiedad: " + resultado);

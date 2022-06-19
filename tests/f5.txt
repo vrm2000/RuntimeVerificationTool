@@ -1,0 +1,4 @@
+(E_{stt,stp} RX_DATA > 0) && (A_{h,l} rx_datarate < 1)
+
+
+

@@ -1,0 +1,18 @@
+******************************
+Evaluacion de la propiedad: 
+	A_{l,l} E_{h} true
+
+Busqueda de intervalo [h,l] dentro del intervalo 1 [l,l] 
+	> Intervalo 1 [57(1-10-2018 11:51:17.5),63(1-10-2018 11:51:23.6)]. TRUE  0.0:
+		>>Node PHI 57. Value: 0.0. true
+		>>Node PHI 58. Value: 0.0. true
+		>>Node PHI 59. Value: 0.0. true
+		>>Node PHI 60. Value: 0.0. true
+		>>Node PHI 61. Value: 0.0. true
+		>>Node PHI 62. Value: 0.0. true
+		>>Node PHI 63. Value: 0.0. true
+Node EVENTUALLY_P 2:true
+Intervalo de condiciones EVENTUALLY_P [true]
+
+Node ALWAYS_PQ 1:true
+Evaluacion de la propiedad: true

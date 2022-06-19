@@ -1,0 +1,31 @@
+******************************
+Evaluacion de la propiedad: 
+	A_{stt,stp} (A_{h,l} RSSI > -99)
+
+Busqueda de intervalo [h,l] dentro del intervalo 1 [stt,stp] 
+	> Intervalo no existente entre [h,l]. false
+Busqueda de intervalo [h,l] dentro del intervalo 2 [stt,stp] 
+	> Intervalo no existente entre [h,l]. false
+Busqueda de intervalo [h,l] dentro del intervalo 3 [stt,stp] 
+	> Intervalo no existente entre [h,l]. false
+Busqueda de intervalo [h,l] dentro del intervalo 4 [stt,stp] 
+	> Intervalo 4 [577(27-9-2018 18:9:15.3),590(27-9-2018 18:9:28.5)]. RSSI > -99.0:
+		>>Node PHI 577. Value: -89.0. true
+		>>Node PHI 578. Value: -89.0. true
+		>>Node PHI 579. Value: -89.0. true
+		>>Node PHI 580. Value: -89.0. true
+		>>Node PHI 581. Value: -89.0. true
+		>>Node PHI 582. Value: -86.0. true
+		>>Node PHI 583. Value: -88.0. true
+		>>Node PHI 584. Value: -88.0. true
+		>>Node PHI 585. Value: -88.0. true
+		>>Node PHI 586. Value: -88.0. true
+		>>Node PHI 587. Value: -88.0. true
+		>>Node PHI 588. Value: -88.0. true
+		>>Node PHI 589. Value: -88.0. true
+		>>Node PHI 590. Value: -88.0. true
+Node ALWAYS_PQ 2:false
+Intervalo de condiciones ALWAYS_PQ [false, false, false, true]
+
+Node ALWAYS_PQ 1:false
+Evaluacion de la propiedad: false

@@ -1,0 +1,119 @@
+******************************
+Evaluacion de la propiedad: 
+	A_{stt,stp} (E_{fp} true)
+
+Busqueda de intervalo [fp,stp] dentro del intervalo 1 [stt,stp] 
+	> Intervalo 1 [20(1-10-2018 11:20:48.3),127(1-10-2018 11:22:37.0)]. TRUE  0.0:
+		>>Node PHI 20. Value: 0.0. true
+		>>Node PHI 21. Value: 0.0. true
+		>>Node PHI 22. Value: 0.0. true
+		>>Node PHI 23. Value: 0.0. true
+		>>Node PHI 24. Value: 0.0. true
+		>>Node PHI 25. Value: 0.0. true
+		>>Node PHI 26. Value: 0.0. true
+		>>Node PHI 27. Value: 0.0. true
+		>>Node PHI 28. Value: 0.0. true
+		>>Node PHI 29. Value: 0.0. true
+		>>Node PHI 30. Value: 0.0. true
+		>>Node PHI 31. Value: 0.0. true
+		>>Node PHI 32. Value: 0.0. true
+		>>Node PHI 33. Value: 0.0. true
+		>>Node PHI 34. Value: 0.0. true
+		>>Node PHI 35. Value: 0.0. true
+		>>Node PHI 36. Value: 0.0. true
+		>>Node PHI 37. Value: 0.0. true
+		>>Node PHI 38. Value: 0.0. true
+		>>Node PHI 39. Value: 0.0. true
+		>>Node PHI 40. Value: 0.0. true
+		>>Node PHI 41. Value: 0.0. true
+		>>Node PHI 42. Value: 0.0. true
+		>>Node PHI 43. Value: 0.0. true
+		>>Node PHI 44. Value: 0.0. true
+		>>Node PHI 45. Value: 0.0. true
+		>>Node PHI 46. Value: 0.0. true
+		>>Node PHI 47. Value: 0.0. true
+		>>Node PHI 48. Value: 0.0. true
+		>>Node PHI 49. Value: 0.0. true
+		>>Node PHI 50. Value: 0.0. true
+		>>Node PHI 51. Value: 0.0. true
+		>>Node PHI 52. Value: 0.0. true
+		>>Node PHI 53. Value: 0.0. true
+		>>Node PHI 54. Value: 0.0. true
+		>>Node PHI 55. Value: 0.0. true
+		>>Node PHI 56. Value: 0.0. true
+		>>Node PHI 57. Value: 0.0. true
+		>>Node PHI 58. Value: 0.0. true
+		>>Node PHI 59. Value: 0.0. true
+		>>Node PHI 60. Value: 0.0. true
+		>>Node PHI 61. Value: 0.0. true
+		>>Node PHI 62. Value: 0.0. true
+		>>Node PHI 63. Value: 0.0. true
+		>>Node PHI 64. Value: 0.0. true
+		>>Node PHI 65. Value: 0.0. true
+		>>Node PHI 66. Value: 0.0. true
+		>>Node PHI 67. Value: 0.0. true
+		>>Node PHI 68. Value: 0.0. true
+		>>Node PHI 69. Value: 0.0. true
+		>>Node PHI 70. Value: 0.0. true
+		>>Node PHI 71. Value: 0.0. true
+		>>Node PHI 72. Value: 0.0. true
+		>>Node PHI 73. Value: 0.0. true
+		>>Node PHI 74. Value: 0.0. true
+		>>Node PHI 75. Value: 0.0. true
+		>>Node PHI 76. Value: 0.0. true
+		>>Node PHI 77. Value: 0.0. true
+		>>Node PHI 78. Value: 0.0. true
+		>>Node PHI 79. Value: 0.0. true
+		>>Node PHI 80. Value: 0.0. true
+		>>Node PHI 81. Value: 0.0. true
+		>>Node PHI 82. Value: 0.0. true
+		>>Node PHI 83. Value: 0.0. true
+		>>Node PHI 84. Value: 0.0. true
+		>>Node PHI 85. Value: 0.0. true
+		>>Node PHI 86. Value: 0.0. true
+		>>Node PHI 87. Value: 0.0. true
+		>>Node PHI 88. Value: 0.0. true
+		>>Node PHI 89. Value: 0.0. true
+		>>Node PHI 90. Value: 0.0. true
+		>>Node PHI 91. Value: 0.0. true
+		>>Node PHI 92. Value: 0.0. true
+		>>Node PHI 93. Value: 0.0. true
+		>>Node PHI 94. Value: 0.0. true
+		>>Node PHI 95. Value: 0.0. true
+		>>Node PHI 96. Value: 0.0. true
+		>>Node PHI 97. Value: 0.0. true
+		>>Node PHI 98. Value: 0.0. true
+		>>Node PHI 99. Value: 0.0. true
+		>>Node PHI 100. Value: 0.0. true
+		>>Node PHI 101. Value: 0.0. true
+		>>Node PHI 102. Value: 0.0. true
+		>>Node PHI 103. Value: 0.0. true
+		>>Node PHI 104. Value: 0.0. true
+		>>Node PHI 105. Value: 0.0. true
+		>>Node PHI 106. Value: 0.0. true
+		>>Node PHI 107. Value: 0.0. true
+		>>Node PHI 108. Value: 0.0. true
+		>>Node PHI 109. Value: 0.0. true
+		>>Node PHI 110. Value: 0.0. true
+		>>Node PHI 111. Value: 0.0. true
+		>>Node PHI 112. Value: 0.0. true
+		>>Node PHI 113. Value: 0.0. true
+		>>Node PHI 114. Value: 0.0. true
+		>>Node PHI 115. Value: 0.0. true
+		>>Node PHI 116. Value: 0.0. true
+		>>Node PHI 117. Value: 0.0. true
+		>>Node PHI 118. Value: 0.0. true
+		>>Node PHI 119. Value: 0.0. true
+		>>Node PHI 120. Value: 0.0. true
+		>>Node PHI 121. Value: 0.0. true
+		>>Node PHI 122. Value: 0.0. true
+		>>Node PHI 123. Value: 0.0. true
+		>>Node PHI 124. Value: 0.0. true
+		>>Node PHI 125. Value: 0.0. true
+		>>Node PHI 126. Value: 0.0. true
+		>>Node PHI 127. Value: 0.0. true
+Node EVENTUALLY_P 2:true
+Intervalo de condiciones EVENTUALLY_P [true]
+
+Node ALWAYS_PQ 1:true
+Evaluacion de la propiedad: true

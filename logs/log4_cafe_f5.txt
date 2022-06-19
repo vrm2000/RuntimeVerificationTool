@@ -1,0 +1,133 @@
+******************************
+Evaluacion de la propiedad: 
+	(E_{stt,stp} RX_DATA > 0) && (A_{h,l} rx_datarate < 1)
+
+Busqueda de intervalo [stt,stp] 
+	> Intervalo 1 [17(27-9-2018 18:8:59.1),122(27-9-2018 18:10:45.5)]. RX_DATA > 0.0:
+		>>Node PHI 17. Value: 30.0. true
+		>>Node PHI 18. Value: 257.0. true
+		>>Node PHI 19. Value: 513.0. true
+		>>Node PHI 20. Value: 720.0. true
+		>>Node PHI 21. Value: 1008.0. true
+		>>Node PHI 22. Value: 1226.0. true
+		>>Node PHI 23. Value: 1532.0. true
+		>>Node PHI 24. Value: 1772.0. true
+		>>Node PHI 25. Value: 2061.0. true
+		>>Node PHI 26. Value: 2324.0. true
+		>>Node PHI 27. Value: 2622.0. true
+		>>Node PHI 28. Value: 2917.0. true
+		>>Node PHI 29. Value: 3183.0. true
+		>>Node PHI 30. Value: 3469.0. true
+		>>Node PHI 31. Value: 3761.0. true
+		>>Node PHI 32. Value: 4034.0. true
+		>>Node PHI 33. Value: 4292.0. true
+		>>Node PHI 34. Value: 4566.0. true
+		>>Node PHI 35. Value: 4825.0. true
+		>>Node PHI 36. Value: 5070.0. true
+		>>Node PHI 37. Value: 5353.0. true
+		>>Node PHI 38. Value: 5579.0. true
+		>>Node PHI 39. Value: 5846.0. true
+		>>Node PHI 40. Value: 6140.0. true
+		>>Node PHI 41. Value: 6433.0. true
+		>>Node PHI 42. Value: 6693.0. true
+		>>Node PHI 43. Value: 6984.0. true
+		>>Node PHI 44. Value: 7215.0. true
+		>>Node PHI 45. Value: 7451.0. true
+		>>Node PHI 46. Value: 7712.0. true
+		>>Node PHI 47. Value: 7777.0. true
+		>>Node PHI 48. Value: 7778.0. true
+		>>Node PHI 49. Value: 7778.0. true
+		>>Node PHI 50. Value: 7778.0. true
+		>>Node PHI 51. Value: 7779.0. true
+		>>Node PHI 52. Value: 7779.0. true
+		>>Node PHI 53. Value: 7779.0. true
+		>>Node PHI 54. Value: 7780.0. true
+		>>Node PHI 55. Value: 7780.0. true
+		>>Node PHI 56. Value: 7780.0. true
+		>>Node PHI 57. Value: 7781.0. true
+		>>Node PHI 58. Value: 7781.0. true
+		>>Node PHI 59. Value: 7782.0. true
+		>>Node PHI 60. Value: 7782.0. true
+		>>Node PHI 61. Value: 7782.0. true
+		>>Node PHI 62. Value: 7783.0. true
+		>>Node PHI 63. Value: 8069.0. true
+		>>Node PHI 64. Value: 8361.0. true
+		>>Node PHI 65. Value: 8654.0. true
+		>>Node PHI 66. Value: 8912.0. true
+		>>Node PHI 67. Value: 9199.0. true
+		>>Node PHI 68. Value: 9466.0. true
+		>>Node PHI 69. Value: 9783.0. true
+		>>Node PHI 70. Value: 10095.0. true
+		>>Node PHI 71. Value: 10385.0. true
+		>>Node PHI 72. Value: 10684.0. true
+		>>Node PHI 73. Value: 10951.0. true
+		>>Node PHI 74. Value: 11256.0. true
+		>>Node PHI 75. Value: 11543.0. true
+		>>Node PHI 76. Value: 11690.0. true
+		>>Node PHI 77. Value: 11805.0. true
+		>>Node PHI 78. Value: 11933.0. true
+		>>Node PHI 79. Value: 12079.0. true
+		>>Node PHI 80. Value: 12217.0. true
+		>>Node PHI 81. Value: 12353.0. true
+		>>Node PHI 82. Value: 12489.0. true
+		>>Node PHI 83. Value: 12611.0. true
+		>>Node PHI 84. Value: 12757.0. true
+		>>Node PHI 85. Value: 12900.0. true
+		>>Node PHI 86. Value: 13045.0. true
+		>>Node PHI 87. Value: 13165.0. true
+		>>Node PHI 88. Value: 13268.0. true
+		>>Node PHI 89. Value: 13405.0. true
+		>>Node PHI 90. Value: 13545.0. true
+		>>Node PHI 91. Value: 13662.0. true
+		>>Node PHI 92. Value: 13802.0. true
+		>>Node PHI 93. Value: 13805.0. true
+		>>Node PHI 94. Value: 13805.0. true
+		>>Node PHI 95. Value: 13805.0. true
+		>>Node PHI 96. Value: 13806.0. true
+		>>Node PHI 97. Value: 13806.0. true
+		>>Node PHI 98. Value: 13807.0. true
+		>>Node PHI 99. Value: 13842.0. true
+		>>Node PHI 100. Value: 13984.0. true
+		>>Node PHI 101. Value: 14125.0. true
+		>>Node PHI 102. Value: 14248.0. true
+		>>Node PHI 103. Value: 14374.0. true
+		>>Node PHI 104. Value: 14508.0. true
+		>>Node PHI 105. Value: 14674.0. true
+		>>Node PHI 106. Value: 14939.0. true
+		>>Node PHI 107. Value: 15219.0. true
+		>>Node PHI 108. Value: 15480.0. true
+		>>Node PHI 109. Value: 15775.0. true
+		>>Node PHI 110. Value: 16048.0. true
+		>>Node PHI 111. Value: 16341.0. true
+		>>Node PHI 112. Value: 16513.0. true
+		>>Node PHI 113. Value: 16513.0. true
+		>>Node PHI 114. Value: 16514.0. true
+		>>Node PHI 115. Value: 16514.0. true
+		>>Node PHI 116. Value: 16514.0. true
+		>>Node PHI 117. Value: 16515.0. true
+		>>Node PHI 118. Value: 16516.0. true
+		>>Node PHI 119. Value: 16516.0. true
+		>>Node PHI 120. Value: 16516.0. true
+		>>Node PHI 121. Value: 16517.0. true
+		>>Node PHI 122. Value: 16519.0. true
+Node EVENTUALLY_PQ 1:true
+Busqueda de intervalo [h,l] 
+	> Intervalo 1 [33(27-9-2018 18:9:15.3),47(27-9-2018 18:9:29.5)]. RX_DATARATE < 1.0:
+		>>Node PHI 33. Value: 4.292. false
+		>>Node PHI 34. Value: 4.566. false
+		>>Node PHI 35. Value: 4.825. false
+		>>Node PHI 36. Value: 5.07. false
+		>>Node PHI 37. Value: 5.353. false
+		>>Node PHI 38. Value: 5.579. false
+		>>Node PHI 39. Value: 5.846. false
+		>>Node PHI 40. Value: 6.14. false
+		>>Node PHI 41. Value: 6.433. false
+		>>Node PHI 42. Value: 6.693. false
+		>>Node PHI 43. Value: 6.984. false
+		>>Node PHI 44. Value: 7.215. false
+		>>Node PHI 45. Value: 7.451. false
+		>>Node PHI 46. Value: 7.712. false
+		>>Node PHI 47. Value: 7.777. false
+Node ALWAYS_PQ 4:false
+Soy Nodo 3tengo (Node 1 AND Node 4) y devuelvo false
+Evaluacion de la propiedad: false
