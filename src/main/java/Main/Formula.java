@@ -432,21 +432,34 @@ public class Formula {
 				mensaje = new String(peticion.getData(), 0, peticion.getLength());
 				if (!mensaje.equals("quit")) {
 					Scanner sc = new Scanner(mensaje);
-					String tsmp = sc.next() + " " + sc.next();
-					String ev = sc.next();
-					datos.get("EVENT_TSMP").add(tsmp);
-					datos.get("EVENTS").add(ev);
-					sc.close();
+					String medida = sc.next();
+					String dia, mes, year = "";
+					try (Scanner trim = new Scanner(medida)) {
+						trim.useDelimiter("[-]");
+						dia = trim.next();
+						mes = trim.next();
+						year = trim.next();
+						if (year.length() < 4) {
+							year = "20" + year;
+						}
+					}
+					medida = dia + "-" + mes + "-" + year + " " + sc.next();
+					if (!medida.contains("."))
+						medida = medida.concat(".0"); // añadimos terminacion para poder parsear correctamente
 					if (anterior == null) {
-						anterior = parser.parse(tsmp);
+						anterior = parser.parse(medida);
 					} else {
-						actual = parser.parse(tsmp);
+						actual = parser.parse(medida);
 						if (actual.before(anterior)) {
 							sc.close();
 							throw new IllegalArgumentException();
 						}
 						anterior = actual;
 					}
+					String ev = sc.next();
+					datos.get("EVENT_TSMP").add(medida);
+					datos.get("EVENTS").add(ev);
+					sc.close();
 				}
 			}
 

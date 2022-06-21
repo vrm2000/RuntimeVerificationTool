@@ -1,0 +1,188 @@
+******************************
+Evaluacion de la propiedad: 
+	A_{l,l} E_{h} true
+
+Busqueda de intervalo [h,l] dentro del intervalo 1 [l,l] 
+	> Intervalo 1 [58(1-10-2018 11:12:37.3),87(1-10-2018 11:13:06.8)]. TRUE  0.0:
+		>>Node PHI 58. Value: 0.0. true
+		>>Node PHI 59. Value: 0.0. true
+		>>Node PHI 60. Value: 0.0. true
+		>>Node PHI 61. Value: 0.0. true
+		>>Node PHI 62. Value: 0.0. true
+		>>Node PHI 63. Value: 0.0. true
+		>>Node PHI 64. Value: 0.0. true
+		>>Node PHI 65. Value: 0.0. true
+		>>Node PHI 66. Value: 0.0. true
+		>>Node PHI 67. Value: 0.0. true
+		>>Node PHI 68. Value: 0.0. true
+		>>Node PHI 69. Value: 0.0. true
+		>>Node PHI 70. Value: 0.0. true
+		>>Node PHI 71. Value: 0.0. true
+		>>Node PHI 72. Value: 0.0. true
+		>>Node PHI 73. Value: 0.0. true
+		>>Node PHI 74. Value: 0.0. true
+		>>Node PHI 75. Value: 0.0. true
+		>>Node PHI 76. Value: 0.0. true
+		>>Node PHI 77. Value: 0.0. true
+		>>Node PHI 78. Value: 0.0. true
+		>>Node PHI 79. Value: 0.0. true
+		>>Node PHI 80. Value: 0.0. true
+		>>Node PHI 81. Value: 0.0. true
+		>>Node PHI 82. Value: 0.0. true
+		>>Node PHI 83. Value: 0.0. true
+		>>Node PHI 84. Value: 0.0. true
+		>>Node PHI 85. Value: 0.0. true
+		>>Node PHI 86. Value: 0.0. true
+		>>Node PHI 87. Value: 0.0. true
+Busqueda de intervalo [h,l] dentro del intervalo 2 [l,l] 
+	> Intervalo 2 [193(1-10-2018 11:21:27.9),223(1-10-2018 11:21:58.0)]. TRUE  0.0:
+		>>Node PHI 193. Value: 0.0. true
+		>>Node PHI 194. Value: 0.0. true
+		>>Node PHI 195. Value: 0.0. true
+		>>Node PHI 196. Value: 0.0. true
+		>>Node PHI 197. Value: 0.0. true
+		>>Node PHI 198. Value: 0.0. true
+		>>Node PHI 199. Value: 0.0. true
+		>>Node PHI 200. Value: 0.0. true
+		>>Node PHI 201. Value: 0.0. true
+		>>Node PHI 202. Value: 0.0. true
+		>>Node PHI 203. Value: 0.0. true
+		>>Node PHI 204. Value: 0.0. true
+		>>Node PHI 205. Value: 0.0. true
+		>>Node PHI 206. Value: 0.0. true
+		>>Node PHI 207. Value: 0.0. true
+		>>Node PHI 208. Value: 0.0. true
+		>>Node PHI 209. Value: 0.0. true
+		>>Node PHI 210. Value: 0.0. true
+		>>Node PHI 211. Value: 0.0. true
+		>>Node PHI 212. Value: 0.0. true
+		>>Node PHI 213. Value: 0.0. true
+		>>Node PHI 214. Value: 0.0. true
+		>>Node PHI 215. Value: 0.0. true
+		>>Node PHI 216. Value: 0.0. true
+		>>Node PHI 217. Value: 0.0. true
+		>>Node PHI 218. Value: 0.0. true
+		>>Node PHI 219. Value: 0.0. true
+		>>Node PHI 220. Value: 0.0. true
+		>>Node PHI 221. Value: 0.0. true
+		>>Node PHI 222. Value: 0.0. true
+		>>Node PHI 223. Value: 0.0. true
+Busqueda de intervalo [h,l] dentro del intervalo 3 [l,l] 
+	> Intervalo 3 [322(1-10-2018 11:30:23.0),384(1-10-2018 11:31:25.9)]. TRUE  0.0:
+		>>Node PHI 322. Value: 0.0. true
+		>>Node PHI 323. Value: 0.0. true
+		>>Node PHI 324. Value: 0.0. true
+		>>Node PHI 325. Value: 0.0. true
+		>>Node PHI 326. Value: 0.0. true
+		>>Node PHI 327. Value: 0.0. true
+		>>Node PHI 328. Value: 0.0. true
+		>>Node PHI 329. Value: 0.0. true
+		>>Node PHI 330. Value: 0.0. true
+		>>Node PHI 331. Value: 0.0. true
+		>>Node PHI 332. Value: 0.0. true
+		>>Node PHI 333. Value: 0.0. true
+		>>Node PHI 334. Value: 0.0. true
+		>>Node PHI 335. Value: 0.0. true
+		>>Node PHI 336. Value: 0.0. true
+		>>Node PHI 337. Value: 0.0. true
+		>>Node PHI 338. Value: 0.0. true
+		>>Node PHI 339. Value: 0.0. true
+		>>Node PHI 340. Value: 0.0. true
+		>>Node PHI 341. Value: 0.0. true
+		>>Node PHI 342. Value: 0.0. true
+		>>Node PHI 343. Value: 0.0. true
+		>>Node PHI 344. Value: 0.0. true
+		>>Node PHI 345. Value: 0.0. true
+		>>Node PHI 346. Value: 0.0. true
+		>>Node PHI 347. Value: 0.0. true
+		>>Node PHI 348. Value: 0.0. true
+		>>Node PHI 349. Value: 0.0. true
+		>>Node PHI 350. Value: 0.0. true
+		>>Node PHI 351. Value: 0.0. true
+		>>Node PHI 352. Value: 0.0. true
+		>>Node PHI 353. Value: 0.0. true
+		>>Node PHI 354. Value: 0.0. true
+		>>Node PHI 355. Value: 0.0. true
+		>>Node PHI 356. Value: 0.0. true
+		>>Node PHI 357. Value: 0.0. true
+		>>Node PHI 358. Value: 0.0. true
+		>>Node PHI 359. Value: 0.0. true
+		>>Node PHI 360. Value: 0.0. true
+		>>Node PHI 361. Value: 0.0. true
+		>>Node PHI 362. Value: 0.0. true
+		>>Node PHI 363. Value: 0.0. true
+		>>Node PHI 364. Value: 0.0. true
+		>>Node PHI 365. Value: 0.0. true
+		>>Node PHI 366. Value: 0.0. true
+		>>Node PHI 367. Value: 0.0. true
+		>>Node PHI 368. Value: 0.0. true
+		>>Node PHI 369. Value: 0.0. true
+		>>Node PHI 370. Value: 0.0. true
+		>>Node PHI 371. Value: 0.0. true
+		>>Node PHI 372. Value: 0.0. true
+		>>Node PHI 373. Value: 0.0. true
+		>>Node PHI 374. Value: 0.0. true
+		>>Node PHI 375. Value: 0.0. true
+		>>Node PHI 376. Value: 0.0. true
+		>>Node PHI 377. Value: 0.0. true
+		>>Node PHI 378. Value: 0.0. true
+		>>Node PHI 379. Value: 0.0. true
+		>>Node PHI 380. Value: 0.0. true
+		>>Node PHI 381. Value: 0.0. true
+		>>Node PHI 382. Value: 0.0. true
+		>>Node PHI 383. Value: 0.0. true
+		>>Node PHI 384. Value: 0.0. true
+Busqueda de intervalo [h,l] dentro del intervalo 4 [l,l] 
+	> Intervalo 4 [459(1-10-2018 11:40:22.6),497(1-10-2018 11:41:01.1)]. TRUE  0.0:
+		>>Node PHI 459. Value: 0.0. true
+		>>Node PHI 460. Value: 0.0. true
+		>>Node PHI 461. Value: 0.0. true
+		>>Node PHI 462. Value: 0.0. true
+		>>Node PHI 463. Value: 0.0. true
+		>>Node PHI 464. Value: 0.0. true
+		>>Node PHI 465. Value: 0.0. true
+		>>Node PHI 466. Value: 0.0. true
+		>>Node PHI 467. Value: 0.0. true
+		>>Node PHI 468. Value: 0.0. true
+		>>Node PHI 469. Value: 0.0. true
+		>>Node PHI 470. Value: 0.0. true
+		>>Node PHI 471. Value: 0.0. true
+		>>Node PHI 472. Value: 0.0. true
+		>>Node PHI 473. Value: 0.0. true
+		>>Node PHI 474. Value: 0.0. true
+		>>Node PHI 475. Value: 0.0. true
+		>>Node PHI 476. Value: 0.0. true
+		>>Node PHI 477. Value: 0.0. true
+		>>Node PHI 478. Value: 0.0. true
+		>>Node PHI 479. Value: 0.0. true
+		>>Node PHI 480. Value: 0.0. true
+		>>Node PHI 481. Value: 0.0. true
+		>>Node PHI 482. Value: 0.0. true
+		>>Node PHI 483. Value: 0.0. true
+		>>Node PHI 484. Value: 0.0. true
+		>>Node PHI 485. Value: 0.0. true
+		>>Node PHI 486. Value: 0.0. true
+		>>Node PHI 487. Value: 0.0. true
+		>>Node PHI 488. Value: 0.0. true
+		>>Node PHI 489. Value: 0.0. true
+		>>Node PHI 490. Value: 0.0. true
+		>>Node PHI 491. Value: 0.0. true
+		>>Node PHI 492. Value: 0.0. true
+		>>Node PHI 493. Value: 0.0. true
+		>>Node PHI 494. Value: 0.0. true
+		>>Node PHI 495. Value: 0.0. true
+		>>Node PHI 496. Value: 0.0. true
+		>>Node PHI 497. Value: 0.0. true
+Busqueda de intervalo [h,l] dentro del intervalo 5 [l,l] 
+	> Intervalo 5 [602(1-10-2018 11:51:17.5),607(1-10-2018 11:51:22.6)]. TRUE  0.0:
+		>>Node PHI 602. Value: 0.0. true
+		>>Node PHI 603. Value: 0.0. true
+		>>Node PHI 604. Value: 0.0. true
+		>>Node PHI 605. Value: 0.0. true
+		>>Node PHI 606. Value: 0.0. true
+		>>Node PHI 607. Value: 0.0. true
+Node EVENTUALLY_P 2:true
+Intervalo de condiciones EVENTUALLY_P [true, true, true, true, true]
+
+Node ALWAYS_PQ 1:true
+Evaluacion de la propiedad: true

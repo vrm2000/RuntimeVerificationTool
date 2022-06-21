@@ -58,12 +58,15 @@ public class Node_PHI extends Node {
 				int j = tsmps_indexes.get("j").get(k), i = tsmps_indexes.get("i").get(k);
 				if (i == -1 && j == -1) {
 					String c2 = "	> Intervalo no existente entre [" + timestamps.get(0) + "," + timestamps.get(1)
-							+ "]. false";
+							+ "]";
 					if (Formula.escritorFichero)
 						Escritor_Fichero.escritor(c2);
 					else
 						System.out.println(c2);
-					condIntervalo.add(false);
+					if (this.pnt instanceof Node_Always_P || this.pnt instanceof Node_Always_PQ)
+						condIntervalo.add(true);
+					else
+						condIntervalo.add(false);
 				} else {
 					String c = "	> Intervalo " + (k + 1) + " [" + tsmps_indexes.get("i").get(k) + "("
 							+ trazas.get("TIME").get(tsmps_indexes.get("i").get(k)) + "),"

@@ -1,5 +1,4 @@
-#!/bin/bash 
-
+#!/bin/bash
 # muestra infomacion para el comando help
 function muestra_uso {
   echo "Esta aplicación está basada en una herramienta de verificación dinámica en la que se comprueba una propiedad especificada en el lenguaje eLTL (lógica que añade intervalos de eventos) sobre una traza de eventos del sistema.
