@@ -1,12 +1,13 @@
 package Main;
 
 import java.awt.Desktop;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -194,8 +195,8 @@ public class Formula {
 	 * 
 	 * Podremos encontrar una representacion que se le ha dado al arbol en el
 	 * fichero temporal "arbol.txt" que este metodo genera. Aunque si la herramienta
-	 * se ejecuta usando el script, este fichero temporal se elimina después de cada
-	 * uso
+	 * se ejecuta usando el script, este fichero temporal se elimina después de
+	 * cada uso
 	 */
 	public static Node construirArbol(String property) {
 		try {
@@ -408,17 +409,18 @@ public class Formula {
 		Date anterior = null, actual = null;
 		SimpleDateFormat parser = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S");
 		try {
-			DatagramSocket socketUDP = new DatagramSocket(PUERTO);
+			ServerSocket servidor = new ServerSocket(PUERTO);
 			String mensaje = "";
 			// Llegada de eventos a traves de socket
-			System.out.println("Esperando la recepcion de eventos...");
+			System.out.println("Esperando la conexion del cliente...");
+			Socket sc = servidor.accept(); // esperamos conexion del cliente
+			System.out.println("Cliente conectado. Listo para enviar eventos");
+			DataInputStream in = new DataInputStream(sc.getInputStream());
 			while (!mensaje.equals("quit")) {
-				DatagramPacket peticion = new DatagramPacket(buffer, buffer.length);
-				socketUDP.receive(peticion);
-				mensaje = new String(peticion.getData(), 0, peticion.getLength());
+				mensaje = in.readUTF();
 				if (!mensaje.equals("quit")) {
-					Scanner sc = new Scanner(mensaje);
-					String medida = sc.next();
+					Scanner sx = new Scanner(mensaje);
+					String medida = sx.next();
 					String dia, mes, year = "";
 					try (Scanner trim = new Scanner(medida)) {
 						trim.useDelimiter("[-]");
@@ -429,7 +431,7 @@ public class Formula {
 							year = "20" + year;
 						}
 					}
-					medida = dia + "-" + mes + "-" + year + " " + sc.next();
+					medida = dia + "-" + mes + "-" + year + " " + sx.next();
 					if (!medida.contains("."))
 						medida = medida.concat(".0"); // añadimos terminacion para poder parsear correctamente
 					if (anterior == null) {
@@ -437,19 +439,21 @@ public class Formula {
 					} else {
 						actual = parser.parse(medida);
 						if (actual.before(anterior)) {
+							sx.close();
 							sc.close();
+							servidor.close();
 							throw new IllegalArgumentException();
 						}
 						anterior = actual;
 					}
-					String ev = sc.next();
+					String ev = sx.next();
 					datos.get("EVENT_TSMP").add(medida);
 					datos.get("EVENTS").add(ev);
-					sc.close();
+					sx.close();
 				}
 			}
-
-			socketUDP.close();
+			sc.close();
+			servidor.close();
 		} catch (IOException | ParseException ex) {
 			System.err.println(ex.getMessage());
 		} catch (IllegalArgumentException e) {
