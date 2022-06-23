@@ -1,5 +1,4 @@
-# RuntimeVerificationTool
-System Traces Runtime Verification and Analysis. Part of a degree thesis of Computer Science in Universidad de Málaga
+# RuntimeVerificationTool 💻⚙️
 
 ## Introducción
 Esta aplicación está basada en una herramienta de verificación dinámica en la que se comprueba una propiedad especificada en el lenguaje eLTL (lógica que añade intervalos de eventos) sobre una traza de eventos del sistema. Dicha comprobación se realizará mendiante la creación de un árbol de hebras en las que cada una tendrá un operador de la lógica eLTL. Cada hebra deberá comunicarse con sus hijos y padres para indicar el inicio o el resultado de su evaluación.
@@ -8,15 +7,13 @@ Esta aplicación está basada en una herramienta de verificación dinámica en l
 La estructura de nuestra implementación cuenta con los siguientes paquetes:
 - **Paquete Main:**
 
-Contiene las dos clases principales de nuestra aplicación: Formula y OnlineEvents.
+Contiene las dos clases principales de nuestra aplicación: **Formula** y **OnlineEvents**.
 En Formula se llevará a cabo la construcción del árbol y su evaluación.
 En OnlineEvents se leerá el fichero que contiene las trazas del sistema y las enviará una a una por un Socket UDP a Formula para que esta la procese.
 
 Adicionalmente, este paquete cuenta con la clase abstracta Node, que indica la estructura que tiene cada nodo del árbol que vamos a crear:
 Quien es su hijo izquierdo, hijo derecho y padre. 
 Una variable por cada hijo en la que recojas su evaluación y si dicho nodo ha contestado ya o no.
-
-Las trazas con las que cuenta el sistema en ese momento.
 
 Como la lógica es temporal con intervalos de eventos, cuenta con una variable que indica el intervalo de eventos
 en los que ese nodo evalua, así como información sobre los indices de la traza de eventos sobre las que tiene que evaluar.
@@ -36,22 +33,39 @@ Como se ha mencionado anteriormente, vamos a evaluar una propiedad diviendolas e
 Se ha optado por usar de manera conjunta el analizador sintáctico CUP con el analizador léxico JFLEX para la creación de las clases que realizan la transformación.
 
 ## Ejecución
-Para la ejecución de la herramienta seguimos los siguientes pasos:
- - **Paso 1.** Ejecutamos la clase Formula. Dicha clase requiere de los siquientes archivos: *propiedad.txt*(no necesita especificarse como argumento) y *eltl_property.txt*. El primero indicará la propiedad que evaluará las trazas del sistema especificada en el lenguaje eLTL y el segundo define los atributos de las medidas y los tipos de eventos que tienen las trazas. *eltl_property.txt* debe especificarse como argumento al lanzar la clase. Al indicar el primer fichero, se procede a la creación del árbol.
+Para la ejecución de la herramienta se recomienda seguir los siguientes pasos
+ - **Paso 1.** Lanzar el script `rvt.sh` con los siguientes argumentos: *eltl_property.txt*, *propiedad.txt* y Y/N. El primero define los atributos de las medidas y los tipos de eventos que tienen las trazas, el segundo indicará la propiedad que evaluará las trazas del sistema especificada en el lenguaje eLTL y el tercero si se desea obtener un resumen de la ejecución por pantalla (N) o en el fichero log.txt (Y). Si se ejecuta sin argumentos, estos se solicitan al usuario por pantalla. El script se encarga de preparar todos los archivos necesarios y llamar a las clases java correspondientes
+```
+./rvt.sh eltl_property.txt propiedad.txt N
+```
+  - **Paso 2.** Ejecutamos OnlineEvents a la que se le debe pasar como argumento el archivo con las trazas. En nuestro caso lo hemos llamado *events_0.txt*. Se puede ejecutar de la siguiente forma:
+```
+java -jar target/OnlineEvents.jar events0.txt
+```
 
-  - **Paso 2.** Ejecutamos la clase OnlineEvents a la que se le debe pasar como argumento el archivo con las trazas. En nuestro caso lo hemos llamado *events_0.txt*.
-
-  - **Paso 3.** La clase Formula recibirá las trazas enviadas desde OnlineEvents y evaluará la propiedad informando por pantalla de cada evaluación.
+  - **Paso 3.** El script devolverá el veredicto por pantalla o abriendo el fichero de log generado.
 
 ## Formula de ejemplo
-Se puede modificar el archivo *propiedad.txt* para indicar nuevas propiedades. A continuación veremos algunos ejemplos de propiedades que se pueden crear:
-`
+El lenguaje eLTL permite expresas fórmulas de la siguiente forma:
 Primer ejemplo:
 ```
-always_[stt,stp] RX_DATA >= 5
-```
-Segundo ejemplo:
-```
-(Eventually_[stt,stp] RX_DATA > 14) || Always_[l,h] RX_DATA == 30 
+always_{stt,stp} RX_DATA_MB >= 5
 ```
 
+Segundo ejemplo:
+```
+(E_[stt,stp] RX_DATA_B > 14) || Always_{l,h} RX_DATA_MB == 30 
+```
+
+Tercer ejemplo:
+```
+((Eventually_[stt,stp] RSSI == 0) || A_[l,l] true) IMPLIES ! E_{h} rx_data_b > 0
+```
+## Ficheros de muestra
+Se incluye con el código fuente la carpeta `tests` con propiedades, ficheros de eventos y de medidas de prueba (los ficheros de medida se especifican en el fichero *eltl_property.txt*. Es necesario que el fichero de medidas y el de eventos esté relacionado, ya que el programa no podría funcionar en caso contrario. Se puede probar una ejecución de la siguiente forma:
+
+```
+$ ./rvt.sh eltl_property.txt ./tests/f6.txt N
+$ java -jar target/OnlineEvents.jar tests/events_6.txt
+```
+El resultado de la evaluación es `false` para los ficheros de trazas de eventos y medidas especificados
