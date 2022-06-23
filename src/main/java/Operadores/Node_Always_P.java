@@ -11,7 +11,6 @@ public class Node_Always_P extends Node {
 		timestamps.add(st1);
 	}
 
-	// Identico a Node_Always_P
 	public boolean evaluarCondicion() {
 		if (events_indexes.size() == 0) {
 			System.err.println(

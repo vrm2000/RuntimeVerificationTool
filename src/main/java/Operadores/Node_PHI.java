@@ -45,7 +45,8 @@ public class Node_PHI extends Node {
 				comp2 = Double.parseDouble(sc.next());
 			}
 			for (int k = 0; k < tsmps_indexes.get("i").size(); k++) { // Para cada intervalo
-				String c3 = "Busqueda de intervalo [" + timestamps.get(0) + "," + timestamps.get(1) + "] ";
+				String c3 = "Busqueda de intervalo [" + timestamps.get(0);
+				c3 += timestamps.size() > 1 ? ("," + timestamps.get(1) + "] ") : ("] ");
 				if (pnt.events_parent) {
 					c3 += "dentro del intervalo " + (k + 1) + " [" + pnt.pnt.timestamps.get(0) + ","
 							+ pnt.pnt.timestamps.get(1) + "] ";
@@ -57,8 +58,9 @@ public class Node_PHI extends Node {
 				// Obtenemos inicio y fin del intervalo que esta siendo evaluado
 				int j = tsmps_indexes.get("j").get(k), i = tsmps_indexes.get("i").get(k);
 				if (i == -1 && j == -1) {
-					String c2 = "	> Intervalo no existente entre [" + timestamps.get(0) + "," + timestamps.get(1)
-							+ "]";
+					String c2 = "	> Intervalo [" + timestamps.get(0);
+					c2 += timestamps.size() > 1 ? ("," + timestamps.get(1) + "] ") : ("] ");
+					c2 += "no existente";
 					if (Formula.escritorFichero)
 						Escritor_Fichero.escritor(c2);
 					else

@@ -81,9 +81,7 @@ public abstract class Node extends Thread {
 	}
 
 	/**
-	 * Se encarga de establecer las relaciones padre-hijo dentro de nuestro arbol,
-	 * asi como de indicar los timestamps a los nodos que sean hijo de un operador
-	 * temporal
+	 * Se encarga de establecer las relaciones padre-hijo dentro de nuestro arbol
 	 * 
 	 * Por defecto, si solo se tiene un hijo, el hijo izquierdo sera el que lo
 	 * almacene.
@@ -103,12 +101,6 @@ public abstract class Node extends Thread {
 				// Si el hijo es un operador temporal, indica que debe coger los intervalos
 				// teniendo en cuenta los intervalos del padre
 				node1.events_parent = true;
-				// Si es un nodo temporal que solo evalua de P en adelante y esta siendo
-				// evaluado por un padre que es otro nodo temporal. El ultimo evento que evalua
-				// debe ser el ultimo evento del nodo padre
-				if (node1.timestamps.size() <= 1 && timestamps.size() > 1) {
-					node1.timestamps.add(this.timestamps.get(1));
-				}
 			}
 		}
 
@@ -129,9 +121,13 @@ public abstract class Node extends Thread {
 
 	}
 
+	// METODO ABSTRACTO DE IMPLEMENTACION EN CADA OPERADOR DESARROLLADO
+	public abstract boolean evaluarCondicion();
+
 	/**
-	 * Traduce de Tipo de evento (STT, STP,...) a valor que representa dicho tipo
-	 * (1, 2, ...). Segun se haya indicado en el fichero de especificaciones
+	 * Traduce de Tipo de evento (STT, STP,...) a valor numerico que representa
+	 * dicho tipo (1, 2, ...). Segun se haya indicado en el fichero de
+	 * especificaciones
 	 * 
 	 * @param e
 	 * @return
@@ -205,27 +201,46 @@ public abstract class Node extends Thread {
 		for (int x = 0; x < i; x++) {
 			it.next();
 		}
-		boolean buscoI = true;
-		while (it.hasNext() && i <= limit) {
-			String event = it.next();
-			// Buscamos los intervalos por pares ij.
-			if (buscoI && event.equalsIgnoreCase(getEvent(tsmp.get(0)))) {
-				aux.get("i").add(i);
-				buscoI = false; // Cuando encuentra un evento i, inicia la busqueda del evento j
-			} else if (tsmp.size() > 1 && !buscoI && event.equalsIgnoreCase(getEvent(tsmp.get(1)))) {
-				aux.get("j").add(i);
-				buscoI = true; // Cuando encuentra el evento j asociado al evento i, vuelve a buscar nuevo
-								// intervalo
+		if (timestamps.size() == 1) { // estamos ante E_P o A_P
+			while (it.hasNext() && i <= limit) {
+				String event = it.next();
+				// Buscamos los indices
+				if (event.equalsIgnoreCase(getEvent(tsmp.get(0)))) {
+					aux.get("i").add(i);
+					aux.get("j").add(i + 1);
+				}
+				i++;
 			}
-			i++;
+		} else {
+			boolean buscoI = true;
+			while (it.hasNext() && i <= limit) {
+				String event = it.next();
+				// Buscamos los intervalos por pares ij.
+				if (buscoI && event.equalsIgnoreCase(getEvent(tsmp.get(0)))) {
+					aux.get("i").add(i);
+					buscoI = false; // Cuando encuentra un evento i, inicia la busqueda del evento j
+				} else if (tsmp.size() > 1 && !buscoI && event.equalsIgnoreCase(getEvent(tsmp.get(1)))) {
+					aux.get("j").add(i);
+					buscoI = true; // Cuando encuentra el evento j asociado al evento i, vuelve a buscar nuevo
+									// intervalo
+					if (buscoI && event.equalsIgnoreCase(getEvent(tsmp.get(0)))) { // bucle para eventos repetidos
+						aux.get("i").add(i);
+						buscoI = false;
+					}
+				}
+				i++;
+			}
+
+			if (!buscoI) { // Si un intervalo ha quedado sin cerrar (no se ha llegado a encontrar j)
+				aux.get("i").remove(aux.get("i").size() - 1); // Eliminamos el inicio de dicho intervalo (i).
+			}
+
 		}
-		if (tsmp.size() <= 1) {
-			aux.get("j").add(trazas.get("EVENTS").size() - 1);
-			buscoI = true;
-		}
-		if (!buscoI) { // Si un intervalo ha quedado sin cerrar (no se ha llegado a encontrar j)
-			aux.get("i").remove(aux.get("i").size() - 1); // Eliminamos el inicio de dicho intervalo (i).
-		}
+		/*
+		 * if (tsmp.size() <= 1) { aux.get("j").add(trazas.get("EVENTS").size() - 1);
+		 * buscoI = true; }
+		 */
+
 		if (aux.get("i").size() > 0) {
 			for (int n = 0; n < aux.get("i").size(); n++) {
 				res.get("i").add(aux.get("i").get(n));
@@ -238,6 +253,12 @@ public abstract class Node extends Thread {
 		getTsmpIndexes(res);
 	}
 
+	/**
+	 * Calcula y almacena los valores de los timestamps con respecto a los indices
+	 * de los intervalos calculados previamente
+	 * 
+	 * @param res
+	 */
 	private void getTsmpIndexes(Map<String, List<Integer>> res) {
 		tsmps_indexes = new HashMap<>();
 		tsmps_indexes.put("i", new ArrayList<>());
@@ -297,8 +318,9 @@ public abstract class Node extends Thread {
 		}
 	}
 
-	public abstract boolean evaluarCondicion();
-
+	/**
+	 * Ejecucion de la hebra controlada por un lock con condiciones
+	 */
 	@Override
 	public void run() {
 		lock.lock();

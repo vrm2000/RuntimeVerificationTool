@@ -1,0 +1,3 @@
+2 Eventually_ 1 h  LEFT: 3
+3  PHI  TRUE
+1 Always_ 2 l l  LEFT: 2

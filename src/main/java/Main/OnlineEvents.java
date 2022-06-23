@@ -12,7 +12,6 @@ import java.text.ParseException;
 public class OnlineEvents {
 
 	/**
-	 * 
 	 * Recrea la recepción dinámica de eventos para la clase Formula. Debe ser
 	 * ejecutada tras Formula. Solo muestra contenido que manda a Formula
 	 * 
@@ -21,7 +20,7 @@ public class OnlineEvents {
 	 * @throws ParseException
 	 */
 	public static void main(String[] args) throws ParseException {
-		final int PUERTO_SERVIDOR = 7777;
+		final int PUERTO_SERVIDOR = 7777; // puerto
 		byte[] buffer = new byte[1024];
 
 		try {

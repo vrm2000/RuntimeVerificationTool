@@ -35,12 +35,12 @@ import Parsing.Parsing;
 
 public class Formula {
 
-	final static int PUERTO = 7777;
-	static byte[] buffer = new byte[1024];
+	final static int PUERTO = 7777; // puerto del socket de conexion
+	static byte[] buffer = new byte[1024]; // buffer para el socket
 	static Map<String, ArrayList<String>> datos = new HashMap<>();
 	static Map<String, ArrayList<String>> eventos = new HashMap<>();
-	private static int longitudArbol;
-	public static boolean escritorFichero = false;
+	private static int longitudArbol; // longitud total del arbol a formal
+	public static boolean escritorFichero = false; // indica si se va a escribir en fichero de log o no
 	/*
 	 * El bidimap nos permitira saber que tipo de evento es cada uno cuando estos
 	 * esten expresados de forma numerica. La clave sera el numero identificador de
@@ -63,7 +63,7 @@ public class Formula {
 	 * Construye los diccionarios tanto de los atributos del fichero eventos como de
 	 * los tipos de eventos.
 	 * 
-	 * @param file: fichero con la especificaciones (eltl_property.txt)
+	 * @param file: fichero con las especificaciones (eltl_property.txt)
 	 */
 	public static void identificaVariables(String file) {
 		String data = "";
@@ -97,8 +97,8 @@ public class Formula {
 			}
 			myReader.close();
 			if (medidas.isEmpty()) {
-				System.err.println("No se ha especificado fichero de medidas en el fichero de especificaci�n " + file
-						+ "\n" + "Agrege la especificaci�n usando #define MEASURES_FILE <nombre_fichero>");
+				System.err.println("No se ha especificado fichero de medidas en el fichero de especificacion " + file
+						+ "\n" + "Agrege la especificacion usando #define MEASURES_FILE <nombre_fichero>");
 				System.exit(1);
 			}
 			leerMedidas(medidas, res);
@@ -189,16 +189,13 @@ public class Formula {
 	}
 
 	/**
-	 * Se encargará de construir el arbol de la propiedad. Dicha propiedad viene
-	 * especificada en el fichero "propiedad.txt". La propiedad debe estar separada
-	 * por espacios para una correcta lectura
+	 * Se encargará de construir el arbol de la propiedad. La propiedad debe estar
+	 * separada por espacios para una correcta lectura.
 	 * 
 	 * Podremos encontrar una representacion que se le ha dado al arbol en el
-	 * fichero "arbol.txt" que este metodo genera.
-	 * 
-	 * 
-	 * 
-	 * 
+	 * fichero temporal "arbol.txt" que este metodo genera. Aunque si la herramienta
+	 * se ejecuta usando el script, este fichero temporal se elimina después de cada
+	 * uso
 	 */
 	public static Node construirArbol(String property) {
 		try {
@@ -358,9 +355,9 @@ public class Formula {
 	 * Se pretende que el árbol se construya preferentemente hacia la izquierda. Si
 	 * el nodo no tiene hijos, no hace falta usar el metodo setSons().
 	 * 
-	 * "eltl_property.txt" contiene las especificaciones de medidas y de tipos de
-	 * eventos. Para indicar que una columna del fichero events es un atributo, se
-	 * usa #define [nombre_atributo] [num columna].
+	 * El fichero de especificaciones contiene las especificaciones de medidas y de
+	 * tipos de eventos. Para indicar que una columna del fichero events es un
+	 * atributo, se usa #define [nombre_atributo] [num columna].
 	 * 
 	 * Para indicar los tipos de eventos que se encuentran en el fichero eventos, es
 	 * necesario la existencia de una columna con #define EVENTS [num columna] que
@@ -369,22 +366,9 @@ public class Formula {
 	 * evento debera ser valores que se encuentren en la columnna designada como
 	 * EVENTS.
 	 * 
-	 * 
-	 * IMPORTANTE:
-	 * 
-	 * NECESARIO EJECUTAR Formula A�ADIENDO COMO ARGUMENTO LA RUTA DEL FICHERO
-	 * "events_0.txt" NECESARIO EJECUTAR OnlineEvents A�ADIENDO COMO ARGUMENTO LA
-	 * RUTA DEL FICHERO "eltl_property.txt" NECESARIO EJECUTAR Formula PREVIAMENTE A
-	 * OnlineEvents
-	 * 
 	 * @throws FileNotFoundException
-	 * 
-	 * 
-	 * @throws InterruptedException
-	 * @throws ParseException
-	 * @throws IOException
 	 */
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) {
 		System.out.println("******************************");
 		System.out.println("Runtime Verification Tool");
 		System.out.println("******************************");
@@ -411,6 +395,8 @@ public class Formula {
 		String c1 = "******************************\n" + "Evaluacion de la propiedad: \n\t";
 		try (Scanner sc = new Scanner(new File(args[1]))) {
 			c1 += sc.nextLine();
+		} catch (FileNotFoundException e1) {
+			System.err.println("Error de lectura en el archivo " + args[1]);
 		}
 		if (Formula.escritorFichero)
 			Escritor_Fichero.escritor(c1 + "\n");
