@@ -38,9 +38,9 @@ Para la ejecución de la herramienta se recomienda seguir los siguientes pasos
 ```
 ./rvt.sh eltl_property.txt propiedad.txt N
 ```
-  - **Paso 2.** Ejecutamos OnlineEvents a la que se le debe pasar como argumento el archivo con las trazas. En nuestro caso lo hemos llamado *events_0.txt*. Se puede ejecutar de la siguiente forma:
+  - **Paso 2.** Ejecutamos OnlineEvents.jar a la que se le debe pasar como argumento el archivo con las trazas. En nuestro caso lo hemos llamado *events_0.txt*. Se puede ejecutar de la siguiente forma:
 ```
-java -jar target/OnlineEvents.jar events0.txt
+java -jar OnlineEvents.jar events0.txt
 ```
 
   - **Paso 3.** El script devolverá el veredicto por pantalla o abriendo el fichero de log generado.
@@ -66,6 +66,6 @@ Se incluye con el código fuente la carpeta `tests` con propiedades, ficheros de
 
 ```
 $ ./rvt.sh eltl_property.txt ./tests/f6.txt N
-$ java -jar target/OnlineEvents.jar tests/events_6.txt
+$ java -jar OnlineEvents.jar tests/events_6.txt
 ```
 El resultado de la evaluación es `false` para los ficheros de trazas de eventos y medidas especificados
