@@ -1,0 +1,15 @@
+#define TIME 0
+#define RSSI 1
+#define RSRP 2
+#define RX_DATA_B 3
+#define RX_DATA_MB 4
+#define RX_DATARATE 5
+#define TX_DATA 6
+#define TX_DATARATE 7
+#events start_end 0
+#events stt 1
+#events stp 2
+#events fp 3
+#events l 4
+#events h 5
+#define MEASURES_FILE "./tests/measures_6.txt"
