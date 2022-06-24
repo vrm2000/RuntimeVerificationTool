@@ -1,4 +1,4 @@
-package Main;
+	package Main;
 
 import java.awt.Desktop;
 import java.io.DataInputStream;
