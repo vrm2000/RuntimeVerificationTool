@@ -33,7 +33,7 @@ fi
 if [ $# -eq 3 ]; then # si se introducen tres argumentos...
   	crea_archivos
   	echo "Lanzando aplicación con argumentos..."
-	java -jar ./target/RuntimeVerificationTool-jar-with-dependencies.jar $1 $2 $3 # lanzamos aplicacion con argumentos
+	java -jar ./RuntimeVerificationTool-jar-with-dependencies.jar $1 $2 $3 # lanzamos aplicacion con argumentos
 elif [ $# -eq 1 ]; then
 	if [ $1 == 'help' ]; then
 	muestra_uso
@@ -43,7 +43,7 @@ elif [ $# -eq 1 ]; then
 else
   	crea_archivos
   	echo "Lanzando aplicación sin argumentos (puede especificarlos como argumento. Consulte help para más información)..."
-	java -jar ./target/RuntimeVerificationTool-jar-with-dependencies.jar # lanzamos aplicacion sin argumentos
+	java -jar ./RuntimeVerificationTool-jar-with-dependencies.jar # lanzamos aplicacion sin argumentos
 fi
 
 #Borramos fichero temporal
