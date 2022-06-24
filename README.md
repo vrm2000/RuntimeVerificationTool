@@ -65,7 +65,7 @@ Tercer ejemplo:
 Se incluye con el código fuente la carpeta `tests` con propiedades, ficheros de eventos y de medidas de prueba (los ficheros de medida se especifican en el fichero *eltl_property.txt*. Es necesario que el fichero de medidas y el de eventos esté relacionado, ya que el programa no podría funcionar en caso contrario. Se puede probar una ejecución de la siguiente forma:
 
 ```
-$ ./rvt.sh eltl_property.txt ./tests/f6.txt N
+$ ./rvt.sh tests/eltl_property.txt tests/f6.txt N
 $ java -jar OnlineEvents.jar tests/events_6.txt
 ```
 El resultado de la evaluación es `false` para los ficheros de trazas de eventos y medidas especificados
