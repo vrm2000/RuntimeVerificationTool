@@ -1,0 +1,91 @@
+// CUP specification for a simple expression evaluator (w/ actions)
+import java_cup.runtime.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+
+action code {: 
+				int id = 1 ;
+				Map<Integer, String> valores = new HashMap<>();
+				Escritor_Fichero ef = new Escritor_Fichero("arbol.txt");
+			:};
+
+/* Terminals (tokens returned by the scanner). */
+terminal TRUE, FALSE, AND, OR, NOT, EVENTUALLY_, ALWAYS_, IMPLIES, AP, CP, AC, CC, COMA, MAYOR, MAYEQ, MENEQ, MENOR, IGUAL, DESIGUAL, NUM;
+terminal String CHARTEXT;
+/* Non-terminals */
+non terminal String op, phi, op_binario, op_unario, expresion, always, eventually;
+
+/* Precedences */
+precedence right IGUAL, DESIGUAL, MAYEQ, MENEQ, MAYOR, MENOR, IMPLIES, AND, OR;
+
+	
+					
+	expresion 	::= 	expresion:e1 op_binario:opb expresion:e2 		{:
+																		Scanner sc = new Scanner(opb); 
+																		Scanner sc1 = new Scanner(e1); 
+																		Scanner sc2 = new Scanner(e2); 
+																		int id = sc.nextInt();
+																		int id1 = sc1.nextInt();
+																		int id2 = sc2.nextInt();
+																		ef.escritor(opb + "  LEFT: " + id1 + " RIGHT: " + id2);
+																	valores.put(id, sc.nextLine() + " " + id1 + " " + id2);
+																	sc.close();
+																	sc1.close();
+																	sc2.close();
+																	RESULT = opb + " " +id1 + " " + id2; :}
+
+					|	op_unario:opu expresion:e1			{:
+																	Scanner sc = new Scanner(opu); 
+																	Scanner sc1 = new Scanner(e1);
+																	int id = sc.nextInt();
+																	int id1 = sc1.nextInt();
+																	ef.escritor(opu + "  LEFT: " + id1);
+																	valores.put(id, sc.nextLine() + " " + id1);
+																	sc.close();
+																	sc1.close();
+																	RESULT = opu + " " +id1;:}
+																	
+					| 	op_unario:opu phi:prop						{:Scanner sc = new Scanner(opu); 
+																	Scanner sc1 = new Scanner(prop); 
+																	int id = sc.nextInt();
+																	int id1 = sc1.nextInt();
+																	ef.escritor(opu + "  LEFT: " + id1);
+																	String res = "PHI " + sc1.nextLine();
+																	ef.escritor(id1 + "  " + res);
+																	valores.put(id, sc.nextLine() + " " + id1);
+																	valores.put(id1, res);
+																	sc.close();
+																	sc1.close();
+																	RESULT = opu + " " +id1 + "\n" + id1 + res;
+																	:}
+					| 	AP expresion:e1 CP 							{:RESULT = e1;:};
+				
+	always 		::= 	ALWAYS_ AC CHARTEXT:ct1 COMA CHARTEXT:ct2 CC 			{:RESULT = "2 " + ct1 + " " + ct2;:}
+					|	ALWAYS_ AC CHARTEXT:ct1 CC					 			{:RESULT = "1 " + ct1;:};
+				
+	eventually 	::= 	EVENTUALLY_ AC CHARTEXT:ct1 COMA CHARTEXT:ct2 CC	 	{:RESULT = "2 " + ct1 + " " + ct2;:}
+					|	EVENTUALLY_ AC CHARTEXT:ct1 CC							{:RESULT = "1 " + ct1;:};
+	
+	phi			::=		CHARTEXT:ct op:o NUM:valor		{:RESULT = id + " " + ct + " " + o + " " + valor; id++;:}
+					|	TRUE		{:RESULT = id + " TRUE"; id++;:}
+					|	FALSE		{:RESULT = id + " FALSE"; id++;:};
+	
+	op			::=		MAYOR 		{:RESULT = ">";:}
+					|	MENOR		{:RESULT = "<";:}
+					|	MAYEQ		{:RESULT = ">=";:}
+					|	MENEQ		{:RESULT = "<=";:}
+					|	IGUAL		{:RESULT = "==";:}
+					|	DESIGUAL	{:RESULT = "!=";:};
+					
+	op_binario		::=		AND			{:RESULT = id +" AND"; id++;:}
+					|	OR			{:RESULT = id + " OR"; id++;:}
+					|	IMPLIES		{:RESULT = id + " IMPLIES"; id++;:};
+					
+	op_unario ::=		always:al		{:RESULT =  id + " Always_ " + al; id++;:}
+					|	eventually:ev	{:RESULT = id + " Eventually_ " + ev; id++;:}
+					|	NOT		{:RESULT = id + " NOT "; id++;:};
+	
+	
